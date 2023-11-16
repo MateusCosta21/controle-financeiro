@@ -105,12 +105,12 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
+                    <span>Cadastrar</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
 
-                        <a class="collapse-item" href="{{route('cadastrar.index')}}">Blank Page</a>
+                        <a class="collapse-item" href="{{route('cadastrar.index')}}">Despesas</a>
                     </div>
                 </div>
             </li>
