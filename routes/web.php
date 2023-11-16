@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContasController;
-
+use App\Http\Controllers\TipoDespesaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/cadastrar', [ContasController::class, 'index'])->name('cadastrar.index');
+    Route::post('/novo_tipo', [TipoDespesaController::class, 'salvarTipoDespesa'])->name('cadastrar.tipo_despesa');
+
 });
 
 

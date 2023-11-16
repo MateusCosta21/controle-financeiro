@@ -20,20 +20,22 @@
                                 <label for="tipoDespesa">Tipo de Despesa</label>
                                 <div class="input-group">
                                     <select class="form-control" id="tipoDespesa" name="tipoDespesa">
-                                        <option value="aluguel">Aluguel</option>
-                                        <option value="agua">Água</option>
-                                        <option value="luz">Luz</option>
+                                        <option value="" selected disabled>Selecione</option>
+                                        @foreach ($tipoDespesa as $despesa)
+                                            <option value="{{ $despesa->id }}">{{ $despesa->nome_despesa }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="input-group-append">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNovoTipoDespesa"><i class="fas fa-plus"></i> </button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#modalNovoTipoDespesa"><i class="fas fa-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
-
                             <!-- Valor da Despesa -->
                             <div class="form-group">
                                 <label for="valorDespesa">Valor da Despesa</label>
-                                <input type="text" class="form-control" id="valorDespesa" name="valorDespesa" placeholder="Informe o valor">
+                                <input type="text" class="form-control" id="valorDespesa" name="valorDespesa"
+                                    placeholder="Informe o valor">
                             </div>
 
                             <!-- Data de Vencimento -->
@@ -51,7 +53,8 @@
     </div>
 
     <!-- Modal Novo Tipo de Despesa -->
-    <div class="modal fade" id="modalNovoTipoDespesa" tabindex="-1" role="dialog" aria-labelledby="modalNovoTipoDespesaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalNovoTipoDespesa" tabindex="-1" role="dialog"
+        aria-labelledby="modalNovoTipoDespesaLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -60,16 +63,20 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="Tipo">Tipo Despesa</label>
-                        <input type="text" class="form-control" id="novo_tipo" name="novo_tipo" placeholder="Informe o tipo">
+                <form action="{{ route('cadastrar.tipo_despesa') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="Tipo">Tipo Despesa</label>
+                            <input type="text" class="form-control" id="nome_despesa" name="nome_despesa"
+                                placeholder="Informe o tipo">
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary">Salvar</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
