@@ -14,12 +14,13 @@
                         <h6 class="m-0 font-weight-bold text-primary">Formulário de Despesas</h6>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form action="{{route('cadastrar.nova_despesa')}}" method="post">
+                            @csrf
                             <!-- Tipo de Despesa (Select) -->
                             <div class="form-group">
                                 <label for="tipoDespesa">Tipo de Despesa</label>
                                 <div class="input-group">
-                                    <select class="form-control" id="tipoDespesa" name="tipoDespesa">
+                                    <select class="form-control" id="tipoDespesa" name="tipo_despesa_id">
                                         <option value="" selected disabled>Selecione</option>
                                         @foreach ($tipoDespesa as $despesa)
                                             <option value="{{ $despesa->id }}">{{ $despesa->nome_despesa }}</option>
@@ -34,14 +35,14 @@
                             <!-- Valor da Despesa -->
                             <div class="form-group">
                                 <label for="valorDespesa">Valor da Despesa</label>
-                                <input type="text" class="form-control" id="valorDespesa" name="valorDespesa"
+                                <input type="text" class="form-control" id="valorDespesa" name="valor_despesa"
                                     placeholder="Informe o valor">
                             </div>
 
                             <!-- Data de Vencimento -->
                             <div class="form-group">
                                 <label for="dataVencimento">Data de Vencimento</label>
-                                <input type="date" class="form-control" id="dataVencimento" name="dataVencimento">
+                                <input type="date" class="form-control" id="dataVencimento" name="data_vencimento">
                             </div>
                             <!-- Botão de Envio -->
                             <button type="submit" class="btn btn-primary">Enviar</button>
