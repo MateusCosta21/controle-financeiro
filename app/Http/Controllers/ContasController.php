@@ -10,7 +10,7 @@ class ContasController extends Controller
       public function index()
     {
         $tipoDespesa = TipoDespesa::all();
-        return view('blank', compact('tipoDespesa'));
+        return view('despesas.cadastrar', compact('tipoDespesa'));
     }
 
   
