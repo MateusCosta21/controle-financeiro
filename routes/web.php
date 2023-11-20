@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContasController;
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DespesaController;
 use App\Http\Controllers\ReceitaController;
 use App\Http\Controllers\TipoDespesaController;
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cadastrar/receita', [ReceitaController::class, 'index'])->name('cadastrar.receita');
     Route::post('/novo_tipo_receita', [TipoReceitaController::class, 'salvarTipoReceita'])->name('cadastrar.tipo_receita');
     Route::post('/nova_receita', [ReceitaController::class, 'salvarNovaReceita'])->name('cadastrar.nova_receita');
+    Route::get('/getData/{mes}', [Dashboard::class, 'getData'])->name('dashboard.mes');
 
 
 });
