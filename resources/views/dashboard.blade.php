@@ -192,18 +192,21 @@
                             // Adicione a coluna de checkbox para cada despesa
                             var pagarButtonCell = tr.insertCell(3);
                             var pagarButton = document.createElement('button');
-                            pagarButton.setAttribute('class',
-                            'btn btn-success btn-sm'); // Remova a classe btn-block
+                            pagarButton.setAttribute('class', 'btn btn-success btn-sm');
                             pagarButton.setAttribute('data-toggle', 'modal');
                             pagarButton.setAttribute('data-target', '#confirmarPagamentoModal');
-                            pagarButton.setAttribute('data-id', despesa
-                            .id); // Substitua 'id' pelo nome correto do identificador da despesa
+                            pagarButton.setAttribute('data-id', despesa.id);
+                            pagarButton.addEventListener('click', function() {
+                                // Armazenar o id_despesa na variável global antes de abrir o modal
+                                idDespesaParaConfirmar = despesa.id;
+                            });
                             pagarButton.appendChild(document.createTextNode('Pagar'));
                             pagarButtonCell.appendChild(pagarButton);
                         });
 
                         // Defina as mesmas classes para a tabela dinâmica
-                        table.setAttribute('class', 'table table-bordered text-center'); // Adicione a classe text-center
+                        table.setAttribute('class',
+                            'table table-bordered text-center'); // Adicione a classe text-center
                         table.setAttribute('id', 'dataTable');
                         table.setAttribute('id', 'dataTable');
 
@@ -219,8 +222,28 @@
             }
 
             function confirmarPagamento() {
-                // Fechar o modal após a confirmação
-                $('#confirmarPagamentoModal').modal('hide');
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                if (idDespesaParaConfirmar !== null) {
+                    $.ajax({
+                        url: '/confirmarPagamento/' + idDespesaParaConfirmar,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }, 
+                        success: function(response) {
+                            alert("Pagamento confirmado");
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+
+                    // Fechar o modal após a confirmação
+                    $('#confirmarPagamentoModal').modal('hide');
+
+                    // Limpar a variável após o uso
+                    idDespesaParaConfirmar = null;
+                }
             }
         </script>
 

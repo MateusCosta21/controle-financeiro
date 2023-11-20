@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/novo_tipo_receita', [TipoReceitaController::class, 'salvarTipoReceita'])->name('cadastrar.tipo_receita');
     Route::post('/nova_receita', [ReceitaController::class, 'salvarNovaReceita'])->name('cadastrar.nova_receita');
     Route::get('/getData/{mes}', [Dashboard::class, 'getData'])->name('dashboard.mes');
+    Route::post('/confirmarPagamento/{idDespesa}', [Dashboard::class, 'confirmarPagamento'])->name('dashboard.confirmaPagamento');
 
 
 });

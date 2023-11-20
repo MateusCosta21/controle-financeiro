@@ -28,7 +28,7 @@ class Dashboard extends Controller
             $nomeDespesa = $despesa->tipoDespesa->nome_despesa;
             $despesa->nome_despesa = $nomeDespesa;
             // Formata a data para dd/mm/aaaa
-            $despesa->data_vencimento = \Carbon\Carbon::parse($despesa->data_vencimento)->format('d/m/Y');
+            $despesa->data_vencimento = Carbon::parse($despesa->data_vencimento)->format('d/m/Y');
             return $despesa;
         });
         $somaValoresReceitas = $receitas->sum('valor_recebido');
@@ -42,5 +42,14 @@ class Dashboard extends Controller
         ];
 
         return response()->json(['data' => $result]);
+    }
+
+    public function confirmarPagamento($idDespesa)
+    {
+        $result = Despesa::where('id', $idDespesa)
+        ->update(['pago' => 'S']);
+
+        return response()->json(['data' => $result]);
+
     }
 }
