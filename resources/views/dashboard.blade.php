@@ -159,7 +159,7 @@ function loadData() {
                 var tr = tbody.insertRow();
 
                 var tipoDespesaCell = tr.insertCell(0);
-                tipoDespesaCell.appendChild(document.createTextNode(despesa.tipo_despesa_id));
+                tipoDespesaCell.appendChild(document.createTextNode(despesa.nome_despesa));
 
                 var valorCell = tr.insertCell(1);
                 valorCell.appendChild(document.createTextNode(despesa.valor));
