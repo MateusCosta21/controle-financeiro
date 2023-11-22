@@ -65,7 +65,7 @@
             </div>
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card border-left-warning shadow h-100 py-2" id="saldoCard">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
@@ -74,7 +74,7 @@
                                 <div id="saldoTotal" class="h5 mb-0 font-weight-bold text-gray-800">$500</div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                                <i class="fas fa-chevron-circle-up fa-2x" id="grafico"></i>
                             </div>
                         </div>
                     </div>
@@ -144,12 +144,29 @@
                         var somaValoresReceitas = data.data.soma_valores_receitas;
                         var somaValoresDespesas = data.data.soma_valores_despesas;
                         var saldoAtual = somaValoresReceitas - somaValoresDespesas;
-                        
 
-                        document.getElementById("receitasTotal").innerHTML = 'R$ ' + somaValoresReceitas;
-                        document.getElementById("despesasTotal").innerHTML = 'R$ ' + somaValoresDespesas;
-                        document.getElementById("saldoTotal").innerHTML = 'R$ ' + saldoAtual;
+                        $("#receitasTotal").text('R$ ' + somaValoresReceitas);
+                        $("#despesasTotal").text('R$ ' + somaValoresDespesas);
+                        $("#saldoTotal").text('R$ ' + saldoAtual);
 
+                        var saldoCard = $("#saldoCard");
+                        var grafico = $("#grafico");
+
+                        // Remover todas as classes de borda antes de adicionar a nova classe
+                        saldoCard.removeClass("border-left-warning border-left-danger border-left-success");
+                        grafico.removeClass("fas fa-chevron-circle-up fa-2x");
+
+                        if (saldoAtual < 0) {
+                            // Se o saldo for negativo, adicione a classe para cor vermelha
+                            saldoCard.addClass("border-left-danger");
+                            grafico.addClass("fas fa-chevron-circle-down fa-2x").css("color", "red");
+
+                        } else {
+                            // Se o saldo for não negativo, adicione a classe para cor verde
+                            saldoCard.addClass("border-left-success");
+                            grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "green");
+
+                        }
                         // Verifique se a tabela já existe
                         if (!table) {
                             // Se não existir, crie uma nova tabela
@@ -180,7 +197,7 @@
 
                             var dataVencimentoCell = tr.insertCell(2);
                             dataVencimentoCell.appendChild(document.createTextNode(despesa
-                            .data_vencimento));
+                                .data_vencimento));
 
                             // Adicione a coluna de checkbox para cada despesa
                             var pagarButtonCell = tr.insertCell(3);
