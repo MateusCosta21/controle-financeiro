@@ -37,7 +37,7 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Receitas</div>
-                                <div id="receitasTotal" class="h5 mb-0 font-weight-bold text-gray-800">R$40,000</div>
+                                <div id="receitasTotal" class="h5 mb-0 font-weight-bold text-gray-800"></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -54,7 +54,7 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                     Despesas</div>
-                                <div id="despesasTotal" class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                <div id="despesasTotal" class="h5 mb-0 font-weight-bold text-gray-800"></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -153,8 +153,8 @@
                     success: function(data) {
                         var somaValoresReceitas = data.data.soma_valores_receitas;
                         var somaValoresDespesas = data.data.soma_valores_despesas;
-                        document.getElementById("receitasTotal").innerHTML = '$' + somaValoresReceitas;
-                        document.getElementById("despesasTotal").innerHTML = '$' + somaValoresDespesas;
+                        document.getElementById("receitasTotal").innerHTML = 'R$ ' + somaValoresReceitas;
+                        document.getElementById("despesasTotal").innerHTML = 'R$ ' + somaValoresDespesas;
 
                         // Verifique se a tabela já existe
                         if (!table) {
