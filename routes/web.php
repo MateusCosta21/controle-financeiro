@@ -6,6 +6,7 @@ use App\Http\Controllers\ContasController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DespesaController;
 use App\Http\Controllers\ReceitaController;
+use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoDespesaController;
 use App\Http\Controllers\TipoReceitaController;
 
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/nova_receita', [ReceitaController::class, 'salvarNovaReceita'])->name('cadastrar.nova_receita');
     Route::get('/getData/{mes}', [Dashboard::class, 'getData'])->name('dashboard.mes');
     Route::post('/confirmarPagamento/{idDespesa}', [Dashboard::class, 'confirmarPagamento'])->name('dashboard.confirmaPagamento');
+    Route::get('/relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.despesas');
+    Route::get('/relatorio_receitas', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.receitas');
 
 
 });
