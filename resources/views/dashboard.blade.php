@@ -175,7 +175,6 @@
                             tbody.innerHTML = '';
                         }
 
-                        // Adicione as linhas da tabela com os dados das despesas
                         data.data.despesas.forEach(function(despesa) {
                             var tr = tbody.insertRow();
 
@@ -187,22 +186,37 @@
 
                             var dataVencimentoCell = tr.insertCell(2);
                             dataVencimentoCell.appendChild(document.createTextNode(despesa
-                                .data_vencimento));
+                            .data_vencimento));
 
                             // Adicione a coluna de checkbox para cada despesa
                             var pagarButtonCell = tr.insertCell(3);
-                            var pagarButton = document.createElement('button');
-                            pagarButton.setAttribute('class', 'btn btn-success btn-sm');
-                            pagarButton.setAttribute('data-toggle', 'modal');
-                            pagarButton.setAttribute('data-target', '#confirmarPagamentoModal');
-                            pagarButton.setAttribute('data-id', despesa.id);
-                            pagarButton.addEventListener('click', function() {
-                                // Armazenar o id_despesa na variável global antes de abrir o modal
-                                idDespesaParaConfirmar = despesa.id;
-                            });
-                            pagarButton.appendChild(document.createTextNode('Pagar'));
-                            pagarButtonCell.appendChild(pagarButton);
+
+                            // Verifique se a despesa já foi paga
+                            if (despesa.pago === "S") {
+                                // Desativar o botão "Pagar"
+                                pagarButtonCell.innerHTML =
+                                    '<button class="btn btn-success btn-sm" disabled>Pago</button>';
+
+                                // Adicionar um estilo visual nas outras colunas indicando pagamento efetuado
+                                tipoDespesaCell.style.textDecoration = 'line-through';
+                                valorCell.style.textDecoration = 'line-through';
+                                dataVencimentoCell.style.textDecoration = 'line-through';
+                            } else {
+                                // Se não foi paga, adicione o botão "Pagar" normalmente
+                                var pagarButton = document.createElement('button');
+                                pagarButton.setAttribute('class', 'btn btn-success btn-sm');
+                                pagarButton.setAttribute('data-toggle', 'modal');
+                                pagarButton.setAttribute('data-target', '#confirmarPagamentoModal');
+                                pagarButton.setAttribute('data-id', despesa.id);
+                                pagarButton.addEventListener('click', function() {
+                                    // Armazenar o id_despesa na variável global antes de abrir o modal
+                                    idDespesaParaConfirmar = despesa.id;
+                                });
+                                pagarButton.appendChild(document.createTextNode('Pagar'));
+                                pagarButtonCell.appendChild(pagarButton);
+                            }
                         });
+
 
                         // Defina as mesmas classes para a tabela dinâmica
                         table.setAttribute('class',
@@ -229,7 +243,7 @@
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken
-                        }, 
+                        },
                         success: function(response) {
                             alert("Pagamento confirmado");
                         },

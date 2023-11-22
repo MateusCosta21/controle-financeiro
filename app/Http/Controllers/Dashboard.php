@@ -27,7 +27,6 @@ class Dashboard extends Controller
         $despesasComNomes = $despesas->map(function ($despesa) {
             $nomeDespesa = $despesa->tipoDespesa->nome_despesa;
             $despesa->nome_despesa = $nomeDespesa;
-            // Formata a data para dd/mm/aaaa
             $despesa->data_vencimento = Carbon::parse($despesa->data_vencimento)->format('d/m/Y');
             return $despesa;
         });
