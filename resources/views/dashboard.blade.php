@@ -143,7 +143,7 @@
                     success: function(data) {
                         var somaValoresReceitas = data.data.soma_valores_receitas;
                         var somaValoresDespesas = data.data.soma_valores_despesas;
-                        var saldoAtual = somaValoresReceitas - somaValoresDespesas;
+                        var saldoAtual = somaValoresReceitas - data.data.soma_valores_despesas_pagas ;
 
                         $("#receitasTotal").text('R$ ' + somaValoresReceitas);
                         $("#despesasTotal").text('R$ ' + somaValoresDespesas);
