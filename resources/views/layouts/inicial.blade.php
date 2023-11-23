@@ -310,6 +310,11 @@
 
                 @yield('receitas')
 
+                @yield('relatorio-despesas')
+
+                @yield('relatorio-receitas')
+
+
             </div>
             <!-- End of Main Content -->
 

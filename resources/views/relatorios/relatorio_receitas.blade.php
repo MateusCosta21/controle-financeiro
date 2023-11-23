@@ -1,6 +1,6 @@
 @extends('layouts.inicial')
 
-@section('receitas')
+@section('relatorio-receitas')
     <div class="container-fluid">
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
