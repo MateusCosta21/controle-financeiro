@@ -3,18 +3,17 @@
 @section('relatorio-despesas')
     <div class="container-fluid">
         <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Receitas</h1>
-        </div>
+
         <!-- Content Row -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Formulário de Receitas</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Relatório de Despesas</h6>
                     </div>
                     <div class="card-body">
-                        <form action="" method="post">
+                        <form action="{{ route('relatorio.gerarRelatorioDespesas') }}" method="post">
+                            @csrf
                             <div class="form-group">
                                 <label for="dataInicial">Data Inicial:</label>
                                 <input type="date" class="form-control" id="dataInicial" name="dataInicial">
@@ -36,6 +35,45 @@
                         </form>
                     </div>
                 </div>
+                @if (isset($result) && count($result) > 0)
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Categoria Despesa</th>
+                                    <th>Valor Despesa</th>
+                                    <th>Data Vencimento</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($result as $despesa)
+                                    <?php
+                                    if ($despesa->pago == 'S') {
+                                        $classeBadge = 'badge-success';
+                                        $status = 'Pago';
+                                    } else {
+                                        $classeBadge = 'badge-danger';
+                                        $status = 'Pendente Pagamento';
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td>{{ $despesa->nome_despesa }}</td>
+                                        <td>R$ {{ number_format($despesa->valor, 2, ',', '.') }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($despesa->data_vencimento)) }}</td>
+                                        <td><span class="badge {{ $classeBadge }}">{{ $status }}</span></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                       
+                        <div class="total-despesas text-primary">
+                            Total das Despesas: {{ number_format($totalDespesas, 2, ',', '.') }}
+                        </div>
+                    </div>
+                @else
+                    <p>Nenhum resultado encontrado.</p>
+                @endif
             </div>
         </div>
     </div>
