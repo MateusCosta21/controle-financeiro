@@ -76,7 +76,7 @@
                         </table>
                        
                         <div class="total-despesas text-primary">
-                            Total das Despesas: {{ number_format($totalDespesas, 2, ',', '.') }}
+                            Total das Despesas:  R${{ number_format($totalDespesas, 2, ',', '.') }}
                         </div>
                     </div>
                 @else

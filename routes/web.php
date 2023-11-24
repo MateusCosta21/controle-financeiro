@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.despesas');
     Route::get('/relatorio_receitas', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.receitas');
     Route::post('/gerar_relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.gerarRelatorioDespesas');
+    Route::post('/gerar_relatorio_receita', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.gerarRelatorioReceitas');
 
 });
 
