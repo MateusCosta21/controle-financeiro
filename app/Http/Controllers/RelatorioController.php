@@ -22,8 +22,8 @@ class RelatorioController extends Controller
     public function relatorioDespesas(Request $request)
     {
         $tipoDespesa = TipoDespesa::all();
-        $dataInicial = $request->input('dataInicial');
-        $dataFinal = $request->input('dataFinal');
+        $dataInicial = Carbon::parse($request->input('dataInicial'));
+        $dataFinal = Carbon::parse($request->input('dataFinal'));
         $tipoDespesaId = $request->input('tipo_despesa_id');
         $idUsuario = Auth::id();
 
@@ -56,15 +56,14 @@ class RelatorioController extends Controller
         $result = $despesas->get();
         $totalDespesas = $result->sum('valor');
 
-
-        return view('relatorios.relatorio_despesas', compact('result', 'tipoDespesa', 'totalDespesas'));
+        return view('relatorios.relatorio_despesas', compact('result', 'tipoDespesa', 'totalDespesas', 'dataInicial', 'dataFinal'));
     }
     public function relatorioReceitas(Request $request)
     {
         $idUsuario = Auth::id();
         $tipoReceita = TipoReceita::all();
-        $dataInicial = $request->input('dataInicial');
-        $dataFinal = $request->input('dataFinal');
+        $dataInicial = Carbon::parse($request->input('dataInicial'));
+        $dataFinal = Carbon::parse($request->input('dataFinal'));
         $tipoReceitaId = $request->input('tipo_receita_id');
 
 
@@ -96,15 +95,14 @@ class RelatorioController extends Controller
         $totalReceitas = $result->sum('valor_recebido');
 
 
-        return view('relatorios.relatorio_receitas', compact('result', 'tipoReceita', 'totalReceitas'));
+        return view('relatorios.relatorio_receitas', compact('result', 'tipoReceita', 'totalReceitas', 'dataInicial', 'dataFinal'));
     }
     public function relatorioDespesasReceitas(Request $request)
     {
         $idUsuario = Auth::id();
-    
-        // Obtenha o ano atual
-        $anoAtual = Carbon::now()->year;
-    
+        $anoAtual = session('selectedYear');
+
+
         // Calcule os totais para cada mês do ano
         $totaisMensais = [];
         for ($mes = 1; $mes <= 12; $mes++) {
