@@ -20,6 +20,6 @@ class DespesaController extends Controller
             'id_usuario' => $idUsuario
          ]);
          
-        return redirect('/cadastrar')->with('success', 'Tipo de despesa salvo com sucesso!');
+        return redirect('/cadastrar')->with('success', 'Despesa Cadastrada com sucesso');
     }
 }
