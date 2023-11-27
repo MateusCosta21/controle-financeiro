@@ -15,18 +15,22 @@ use Illuminate\Support\Facades\DB;
 
 class Dashboard extends Controller
 {
-    public function getData($month)
+    public function getData($year, $month)
     {
         $idUsuario = Auth::id();
-        $receitas = Receita::whereRaw("EXTRACT(MONTH FROM data_Entrada) = ?", [$month])
+        $receitas = Receita::whereYear('data_entrada', '=', $year)
+            ->whereMonth('data_entrada', '=', $month)
             ->where('id_usuario', $idUsuario)
             ->get();
 
-        $despesas = Despesa::whereRaw("EXTRACT(MONTH FROM data_vencimento) = ?", [$month])
+        $despesas = Despesa::whereYear('data_vencimento', '=', $year)
+            ->whereMonth('data_vencimento', '=', $month)
             ->where('id_usuario', $idUsuario)
             ->get();
 
-        $somaValoresDespesasPagas = Despesa::whereRaw("EXTRACT(MONTH FROM data_vencimento) = ? AND pago = 'S'", [$month])
+        $somaValoresDespesasPagas = Despesa::whereYear('data_vencimento', '=', $year)
+            ->whereMonth('data_vencimento', '=', $month)
+            ->where('pago', 'S')
             ->where('id_usuario', $idUsuario)
             ->select(DB::raw('SUM(CAST(valor AS numeric)) as total_valor'))
             ->first()
@@ -47,7 +51,6 @@ class Dashboard extends Controller
             'soma_valores_receitas' => $somaValoresReceitas,
             'soma_valores_despesas' => $somaValoresDespesas,
             'soma_valores_despesas_pagas' => $somaValoresDespesasPagas,
-
         ];
 
         return response()->json(['data' => $result]);
@@ -65,6 +68,6 @@ class Dashboard extends Controller
     public function disconnect()
     {
         Auth::logout();
-        return redirect()->route('/'); 
+        return redirect()->route('/');
     }
 }

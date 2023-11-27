@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cadastrar/receita', [ReceitaController::class, 'index'])->name('cadastrar.receita');
     Route::post('/novo_tipo_receita', [TipoReceitaController::class, 'salvarTipoReceita'])->name('cadastrar.tipo_receita');
     Route::post('/nova_receita', [ReceitaController::class, 'salvarNovaReceita'])->name('cadastrar.nova_receita');
-    Route::get('/getData/{mes}', [Dashboard::class, 'getData'])->name('dashboard.mes');
+    Route::get('/getData/{ano}/{mes}', [Dashboard::class, 'getData'])->name('dashboard.mes');
     Route::post('/confirmarPagamento/{idDespesa}', [Dashboard::class, 'confirmarPagamento'])->name('dashboard.confirmaPagamento');
     Route::get('/relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.despesas');
     Route::get('/relatorio_receitas', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.receitas');
