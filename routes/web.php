@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContasController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\ReceitaController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoDespesaController;
 use App\Http\Controllers\TipoReceitaController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/novo_tipo_receita', [TipoReceitaController::class, 'salvarTipoReceita'])->name('cadastrar.tipo_receita');
     Route::post('/nova_receita', [ReceitaController::class, 'salvarNovaReceita'])->name('cadastrar.nova_receita');
     Route::get('/getData/{mes}', [Dashboard::class, 'getData'])->name('dashboard.mes');
+    Route::post('/salvaAno', [Dashboard::class, 'salvaAno'])->name('salvaAno');
+
     Route::post('/confirmarPagamento/{idDespesa}', [Dashboard::class, 'confirmarPagamento'])->name('dashboard.confirmaPagamento');
     Route::get('/relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.despesas');
     Route::get('/relatorio_receitas', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.receitas');
@@ -49,6 +51,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/gerar_relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.gerarRelatorioDespesas');
     Route::post('/gerar_relatorio_receita', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.gerarRelatorioReceitas');
+    Route::post('/disconnect', [Dashboard::class, 'disconnect'])->name('disconnect');
+
 
 });
 

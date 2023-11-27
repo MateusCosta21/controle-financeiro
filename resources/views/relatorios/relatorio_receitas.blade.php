@@ -44,6 +44,8 @@
                     </div>
                 </div>
                 @if (isset($result) && count($result) > 0)
+                <h5 class="text-center"> Relatório de Receitas de {{ $dataInicial->format('d/m/Y') }} a {{ $dataFinal->format('d/m/Y') }} </h5><br>
+
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
