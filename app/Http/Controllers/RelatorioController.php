@@ -1,4 +1,4 @@
-]<?php
+<?php
 
 namespace App\Http\Controllers;
 
@@ -6,8 +6,13 @@ use App\Models\Despesa;
 use App\Models\Receita;
 use App\Models\TipoDespesa;
 use App\Models\TipoReceita;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+
 
 
 
@@ -93,4 +98,36 @@ class RelatorioController extends Controller
 
         return view('relatorios.relatorio_receitas', compact('result', 'tipoReceita', 'totalReceitas'));
     }
+    public function relatorioDespesasReceitas(Request $request)
+    {
+        $idUsuario = Auth::id();
+    
+        // Obtenha o ano atual
+        $anoAtual = Carbon::now()->year;
+    
+        // Calcule os totais para cada mês do ano
+        $totaisMensais = [];
+        for ($mes = 1; $mes <= 12; $mes++) {
+            $totalDespesas = Despesa::where('id_usuario', $idUsuario)
+                ->whereRaw('CAST(valor AS NUMERIC) IS NOT NULL')
+                ->whereYear('data_vencimento', '=', $anoAtual)
+                ->whereMonth('data_vencimento', '=', $mes)
+                ->sum(DB::raw('CAST(valor AS NUMERIC)'));
+    
+            $totalReceitas = Receita::where('id_usuario', $idUsuario)
+                ->whereRaw('CAST(valor_recebido AS NUMERIC) IS NOT NULL')
+                ->whereYear('data_entrada', '=', $anoAtual)
+                ->whereMonth('data_entrada', '=', $mes)
+                ->sum(DB::raw('CAST(valor_recebido AS NUMERIC)'));
+    
+            $totaisMensais[] = [
+                'mes' => ucfirst(Carbon::createFromFormat('!m', $mes)->locale('pt_BR')->monthName),
+                'totalDespesas' => $totalDespesas,
+                'totalReceitas' => $totalReceitas,
+            ];
+        }
+    
+        return view('relatorios.relatorio_despesas_receitas', compact('totaisMensais', 'anoAtual'));
+    }
+    
 }

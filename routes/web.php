@@ -44,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/confirmarPagamento/{idDespesa}', [Dashboard::class, 'confirmarPagamento'])->name('dashboard.confirmaPagamento');
     Route::get('/relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.despesas');
     Route::get('/relatorio_receitas', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.receitas');
+    Route::get('/relatorio_despesas_receita', [RelatorioController::class, 'relatorioDespesasReceitas'])->name('relatorio.despesas_receitas');
+    Route::POST('/relatorio_despesas_receita', [RelatorioController::class, 'relatorioDespesasReceitas'])->name('relatorio.despesas_receitas');
+
     Route::post('/gerar_relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.gerarRelatorioDespesas');
     Route::post('/gerar_relatorio_receita', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.gerarRelatorioReceitas');
 
