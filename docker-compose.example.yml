@@ -1,0 +1,26 @@
+version: '3'
+services:
+  laravel:
+    build:
+      context: ./financeiro
+      dockerfile: Dockerfile
+    container_name: financeiro
+    ports:
+      - '9009:80'
+    volumes:
+      - ./financeiro:/var/www/html
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: always
+    container_name: db-financeiro
+    ports:
+      - '5439:5432'
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
