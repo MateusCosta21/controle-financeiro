@@ -21,6 +21,8 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 
 </head>
@@ -79,6 +81,8 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('relatorio.despesas') }}">Despesas</a>
                         <a class="collapse-item" href="{{ route('relatorio.receitas') }}">Receitas</a>
+                        <a class="collapse-item" href="{{ route('relatorio.despesas_receitas') }}">Despesas/Receita</a>
+
                     </div>
                 </div>
             </li>
@@ -314,6 +318,8 @@
 
                 @yield('relatorio-receitas')
 
+                @yield('relatorio-receitas_despesas')
+
 
             </div>
             <!-- End of Main Content -->
@@ -366,12 +372,6 @@
 
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/chart.js/Chart.min.js')}}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js')}}"></script>
 
 </body>
 
