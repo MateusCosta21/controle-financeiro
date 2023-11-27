@@ -69,7 +69,7 @@ class Dashboard extends Controller
     public function disconnect()
     {
         Auth::logout();
-        return redirect()->route('/');
+        return redirect()->route('/login');
     }
 
 

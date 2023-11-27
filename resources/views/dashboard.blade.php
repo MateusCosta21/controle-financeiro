@@ -183,24 +183,22 @@
                             var saldoCard = $("#saldoCard");
                             var grafico = $("#grafico");
 
-                            // Remover todas as classes de borda antes de adicionar a nova classe
                             saldoCard.removeClass("border-left-warning border-left-danger border-left-success");
                             grafico.removeClass("fas fa-chevron-circle-up fa-2x");
 
                             if (saldoAtual < 0) {
-                                // Se o saldo for negativo, adicione a classe para cor vermelha
                                 saldoCard.addClass("border-left-danger");
                                 grafico.addClass("fas fa-chevron-circle-down fa-2x").css("color", "red");
 
+                            } else if (saldoAtual === 0) {
+                                saldoCard.addClass("border-left-gray");
+                                grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "gray");
+
                             } else {
-                                // Se o saldo for não negativo, adicione a classe para cor verde
                                 saldoCard.addClass("border-left-success");
                                 grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "green");
-
                             }
-                            // Verifique se a tabela já existe
                             if (!table) {
-                                // Se não existir, crie uma nova tabela
                                 table = document.createElement('table');
                                 table.setAttribute('class', 'table table-bordered');
                                 table.setAttribute('id', 'dataTable');
@@ -212,7 +210,6 @@
 
                                 var tbody = table.createTBody();
                             } else {
-                                // Se a tabela já existir, limpe o corpo
                                 var tbody = table.tBodies[0];
                                 tbody.innerHTML = '';
                             }
@@ -230,28 +227,21 @@
                                 dataVencimentoCell.appendChild(document.createTextNode(despesa
                                     .data_vencimento));
 
-                                // Adicione a coluna de checkbox para cada despesa
                                 var pagarButtonCell = tr.insertCell(3);
 
-                                // Verifique se a despesa já foi paga
                                 if (despesa.pago === "S") {
-                                    // Desativar o botão "Pagar"
                                     pagarButtonCell.innerHTML =
                                         '<button class="btn btn-success btn-sm" disabled>Pago</button>';
-
-                                    // Adicionar um estilo visual nas outras colunas indicando pagamento efetuado
                                     tipoDespesaCell.style.textDecoration = 'line-through';
                                     valorCell.style.textDecoration = 'line-through';
                                     dataVencimentoCell.style.textDecoration = 'line-through';
                                 } else {
-                                    // Se não foi paga, adicione o botão "Pagar" normalmente
                                     var pagarButton = document.createElement('button');
                                     pagarButton.setAttribute('class', 'btn btn-success btn-sm');
                                     pagarButton.setAttribute('data-toggle', 'modal');
                                     pagarButton.setAttribute('data-target', '#confirmarPagamentoModal');
                                     pagarButton.setAttribute('data-id', despesa.id);
                                     pagarButton.addEventListener('click', function() {
-                                        // Armazenar o id_despesa na variável global antes de abrir o modal
                                         idDespesaParaConfirmar = despesa.id;
                                     });
                                     pagarButton.appendChild(document.createTextNode('Pagar'));
@@ -260,13 +250,11 @@
                             });
 
 
-                            // Defina as mesmas classes para a tabela dinâmica
                             table.setAttribute('class',
-                                'table table-bordered text-center'); // Adicione a classe text-center
+                                'table table-bordered text-center');
                             table.setAttribute('id', 'dataTable');
                             table.setAttribute('id', 'dataTable');
 
-                            // Substitua o conteúdo da div "dynamicContent" pela tabela
                             var dynamicContentDiv = document.getElementById("dynamicContent");
                             dynamicContentDiv.innerHTML = '';
                             dynamicContentDiv.appendChild(table);
