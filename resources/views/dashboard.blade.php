@@ -239,24 +239,22 @@
                         },
                         success: function(response) {
                             alert("Pagamento confirmado");
+                            loadData();
+
                         },
                         error: function(error) {
                             console.log(error);
                         }
                     });
 
-                    // Fechar o modal após a confirmação
                     $('#confirmarPagamentoModal').modal('hide');
 
-                    // Limpar a variável após o uso
                     idDespesaParaConfirmar = null;
                 }
             }
 
             window.addEventListener('load', function () {
-            // Define o mês padrão para dezembro (12)
             document.getElementById("selectMonth").value = "1";
-            // Chama a função loadData() para carregar dados de dezembro
             loadData();
         });
         </script>
