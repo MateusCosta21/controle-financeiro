@@ -19,9 +19,6 @@ php artisan key:generate
 
 php artisan migrate 
 
-## 📦 Implantação
-
-Adicione notas adicionais sobre como implantar isso em um sistema ativo
 
 ## 🛠️ Construído com
 
