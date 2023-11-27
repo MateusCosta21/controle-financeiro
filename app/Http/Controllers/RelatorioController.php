@@ -62,8 +62,8 @@ class RelatorioController extends Controller
     {
         $idUsuario = Auth::id();
         $tipoReceita = TipoReceita::all();
-        $dataInicial = $request->input('dataInicial');
-        $dataFinal = $request->input('dataFinal');
+        $dataInicial = Carbon::parse($request->input('dataInicial'));
+        $dataFinal = Carbon::parse($request->input('dataFinal'));
         $tipoReceitaId = $request->input('tipo_receita_id');
 
 
@@ -95,7 +95,7 @@ class RelatorioController extends Controller
         $totalReceitas = $result->sum('valor_recebido');
 
 
-        return view('relatorios.relatorio_receitas', compact('result', 'tipoReceita', 'totalReceitas'));
+        return view('relatorios.relatorio_receitas', compact('result', 'tipoReceita', 'totalReceitas', 'dataInicial', 'dataFinal'));
     }
     public function relatorioDespesasReceitas(Request $request)
     {
