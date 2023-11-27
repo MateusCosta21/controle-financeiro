@@ -1,4 +1,4 @@
-<?php
+]<?php
 
 namespace App\Http\Controllers;
 
@@ -7,6 +7,9 @@ use App\Models\Receita;
 use App\Models\TipoDespesa;
 use App\Models\TipoReceita;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class RelatorioController extends Controller
 {
@@ -17,6 +20,8 @@ class RelatorioController extends Controller
         $dataInicial = $request->input('dataInicial');
         $dataFinal = $request->input('dataFinal');
         $tipoDespesaId = $request->input('tipo_despesa_id');
+        $idUsuario = Auth::id();
+
 
 
         if ($request->isMethod('post')) {
@@ -36,7 +41,8 @@ class RelatorioController extends Controller
 
         $despesas = Despesa::select('despesas.*', 'tipo_despesas.nome_despesa')
             ->join('tipo_despesas', 'despesas.tipo_despesa_id', '=', 'tipo_despesas.id')
-            ->whereBetween('data_vencimento', [$dataInicial, $dataFinal]);
+            ->whereBetween('data_vencimento', [$dataInicial, $dataFinal])
+            ->where('id_usuario', $idUsuario);
 
         if ($tipoDespesaId !== null) {
             $despesas->where('tipo_despesa_id', $tipoDespesaId);
@@ -50,6 +56,7 @@ class RelatorioController extends Controller
     }
     public function relatorioReceitas(Request $request)
     {
+        $idUsuario = Auth::id();
         $tipoReceita = TipoReceita::all();
         $dataInicial = $request->input('dataInicial');
         $dataFinal = $request->input('dataFinal');
@@ -73,7 +80,8 @@ class RelatorioController extends Controller
 
         $receitas = Receita::select('receitas.*', 'tipo_receitas.nome_receita')
             ->join('tipo_receitas', 'receitas.tipo_receita_id', '=', 'tipo_receita_id')
-            ->whereBetween('data_entrada', [$dataInicial, $dataFinal]);
+            ->whereBetween('data_entrada', [$dataInicial, $dataFinal])
+            ->where('id_usuario', $idUsuario);
 
         if ($tipoReceitaId !== null) {
             $receitas->where('tipo_despesa_id', $tipoReceitaId);
