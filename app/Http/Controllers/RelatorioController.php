@@ -22,8 +22,8 @@ class RelatorioController extends Controller
     public function relatorioDespesas(Request $request)
     {
         $tipoDespesa = TipoDespesa::all();
-        $dataInicial = $request->input('dataInicial');
-        $dataFinal = $request->input('dataFinal');
+        $dataInicial = Carbon::parse($request->input('dataInicial'));
+        $dataFinal = Carbon::parse($request->input('dataFinal'));
         $tipoDespesaId = $request->input('tipo_despesa_id');
         $idUsuario = Auth::id();
 
@@ -56,8 +56,7 @@ class RelatorioController extends Controller
         $result = $despesas->get();
         $totalDespesas = $result->sum('valor');
 
-
-        return view('relatorios.relatorio_despesas', compact('result', 'tipoDespesa', 'totalDespesas'));
+        return view('relatorios.relatorio_despesas', compact('result', 'tipoDespesa', 'totalDespesas', 'dataInicial', 'dataFinal'));
     }
     public function relatorioReceitas(Request $request)
     {
