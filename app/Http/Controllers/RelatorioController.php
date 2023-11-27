@@ -6,7 +6,15 @@ use App\Models\Despesa;
 use App\Models\Receita;
 use App\Models\TipoDespesa;
 use App\Models\TipoReceita;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+
+
+
 
 class RelatorioController extends Controller
 {
@@ -17,6 +25,8 @@ class RelatorioController extends Controller
         $dataInicial = $request->input('dataInicial');
         $dataFinal = $request->input('dataFinal');
         $tipoDespesaId = $request->input('tipo_despesa_id');
+        $idUsuario = Auth::id();
+
 
 
         if ($request->isMethod('post')) {
@@ -36,7 +46,8 @@ class RelatorioController extends Controller
 
         $despesas = Despesa::select('despesas.*', 'tipo_despesas.nome_despesa')
             ->join('tipo_despesas', 'despesas.tipo_despesa_id', '=', 'tipo_despesas.id')
-            ->whereBetween('data_vencimento', [$dataInicial, $dataFinal]);
+            ->whereBetween('data_vencimento', [$dataInicial, $dataFinal])
+            ->where('id_usuario', $idUsuario);
 
         if ($tipoDespesaId !== null) {
             $despesas->where('tipo_despesa_id', $tipoDespesaId);
@@ -50,6 +61,7 @@ class RelatorioController extends Controller
     }
     public function relatorioReceitas(Request $request)
     {
+        $idUsuario = Auth::id();
         $tipoReceita = TipoReceita::all();
         $dataInicial = $request->input('dataInicial');
         $dataFinal = $request->input('dataFinal');
@@ -73,7 +85,8 @@ class RelatorioController extends Controller
 
         $receitas = Receita::select('receitas.*', 'tipo_receitas.nome_receita')
             ->join('tipo_receitas', 'receitas.tipo_receita_id', '=', 'tipo_receita_id')
-            ->whereBetween('data_entrada', [$dataInicial, $dataFinal]);
+            ->whereBetween('data_entrada', [$dataInicial, $dataFinal])
+            ->where('id_usuario', $idUsuario);
 
         if ($tipoReceitaId !== null) {
             $receitas->where('tipo_despesa_id', $tipoReceitaId);
@@ -85,4 +98,36 @@ class RelatorioController extends Controller
 
         return view('relatorios.relatorio_receitas', compact('result', 'tipoReceita', 'totalReceitas'));
     }
+    public function relatorioDespesasReceitas(Request $request)
+    {
+        $idUsuario = Auth::id();
+    
+        // Obtenha o ano atual
+        $anoAtual = Carbon::now()->year;
+    
+        // Calcule os totais para cada mês do ano
+        $totaisMensais = [];
+        for ($mes = 1; $mes <= 12; $mes++) {
+            $totalDespesas = Despesa::where('id_usuario', $idUsuario)
+                ->whereRaw('CAST(valor AS NUMERIC) IS NOT NULL')
+                ->whereYear('data_vencimento', '=', $anoAtual)
+                ->whereMonth('data_vencimento', '=', $mes)
+                ->sum(DB::raw('CAST(valor AS NUMERIC)'));
+    
+            $totalReceitas = Receita::where('id_usuario', $idUsuario)
+                ->whereRaw('CAST(valor_recebido AS NUMERIC) IS NOT NULL')
+                ->whereYear('data_entrada', '=', $anoAtual)
+                ->whereMonth('data_entrada', '=', $mes)
+                ->sum(DB::raw('CAST(valor_recebido AS NUMERIC)'));
+    
+            $totaisMensais[] = [
+                'mes' => ucfirst(Carbon::createFromFormat('!m', $mes)->locale('pt_BR')->monthName),
+                'totalDespesas' => $totalDespesas,
+                'totalReceitas' => $totalReceitas,
+            ];
+        }
+    
+        return view('relatorios.relatorio_despesas_receitas', compact('totaisMensais', 'anoAtual'));
+    }
+    
 }
