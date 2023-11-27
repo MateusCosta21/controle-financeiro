@@ -60,4 +60,11 @@ class Dashboard extends Controller
 
         return response()->json(['data' => $result]);
     }
+
+
+    public function disconnect()
+    {
+        Auth::logout();
+        return redirect()->route('/'); 
+    }
 }

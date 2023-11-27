@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContasController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\ReceitaController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoDespesaController;
 use App\Http\Controllers\TipoReceitaController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/gerar_relatorio_despesas', [RelatorioController::class, 'relatorioDespesas'])->name('relatorio.gerarRelatorioDespesas');
     Route::post('/gerar_relatorio_receita', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.gerarRelatorioReceitas');
+    Route::post('/disconnect', [Dashboard::class, 'disconnect'])->name('disconnect');
+
 
 });
 
