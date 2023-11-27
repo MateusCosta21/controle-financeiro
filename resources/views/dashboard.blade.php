@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <!-- Page Heading -->
         <button class="btn btn-warning" data-toggle="modal" data-target="#selectYearModal">
-            <i class="fas fa-calendar"></i> 
+            <i class="fas fa-calendar"></i>
         </button>
 
         <div class="modal fade" id="selectYearModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -28,7 +28,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" onclick="loadData()">Confirmar</button>
+                        <button type="button" class="btn btn-primary" onclick="salvaAno()">Confirmar</button>
                     </div>
                 </div>
             </div>
@@ -143,16 +143,35 @@
             <script>
                 var table; // Mova a declaração da variável table para fora da função
 
+                function salvaAno() {
+                    // Obtém o valor selecionado no select
+                    var selectedYear = document.getElementById('selectYear').value;
+
+                    // Faz uma requisição Ajax para armazenar o valor na sessão
+                    // Certifique-se de ter o jQuery incluído se estiver usando o exemplo abaixo
+                    $.ajax({
+                        type: 'POST',
+                        url: '/salvaAno',
+                        data: {
+                            selectedYear: selectedYear,
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            // Fecha o modal ou executa outras ações necessárias
+                            $('#selectYearModal').modal('hide');
+                            loadData();
+                        }
+                    });
+                }
+
                 function loadData() {
                     var selectedMonth = document.getElementById("selectMonth").value;
-                    var selectedYear = document.getElementById("selectYear").value; // Adicione esta linha
-                    var url = '/getData/' + selectedYear + '/' + selectedMonth; 
+                    var url = '/getData/' + selectedMonth;
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function(data) {
-                            $('#selectYearModal').modal('hide');
                             var somaValoresReceitas = data.data.soma_valores_receitas;
                             var somaValoresDespesas = data.data.soma_valores_despesas;
                             var saldoAtual = somaValoresReceitas - data.data.soma_valores_despesas_pagas;

@@ -101,10 +101,9 @@ class RelatorioController extends Controller
     public function relatorioDespesasReceitas(Request $request)
     {
         $idUsuario = Auth::id();
-    
-        // Obtenha o ano atual
-        $anoAtual = Carbon::now()->year;
-    
+        $anoAtual = session('selectedYear');
+
+
         // Calcule os totais para cada mês do ano
         $totaisMensais = [];
         for ($mes = 1; $mes <= 12; $mes++) {

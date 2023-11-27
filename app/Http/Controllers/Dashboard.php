@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\DB;
 
 class Dashboard extends Controller
 {
-    public function getData($year, $month)
+    public function getData($month)
     {
+        $year = session('selectedYear');
         $idUsuario = Auth::id();
         $receitas = Receita::whereYear('data_entrada', '=', $year)
             ->whereMonth('data_entrada', '=', $month)
@@ -69,5 +70,15 @@ class Dashboard extends Controller
     {
         Auth::logout();
         return redirect()->route('/');
+    }
+
+
+    public function salvaAno(Request $request)
+    {
+        $selectedYear = $request->input('selectedYear');
+
+        session(['selectedYear' => $selectedYear]);
+
+        return response()->json(['success' => true]);
     }
 }
