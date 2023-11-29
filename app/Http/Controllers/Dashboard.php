@@ -23,20 +23,18 @@ class Dashboard extends Controller
             ->whereMonth('data_entrada', '=', $month)
             ->where('id_usuario', $idUsuario)
             ->get();
-
+    
         $despesas = Despesa::whereYear('data_vencimento', '=', $year)
             ->whereMonth('data_vencimento', '=', $month)
             ->where('id_usuario', $idUsuario)
             ->get();
-
+    
         $somaValoresDespesasPagas = Despesa::whereYear('data_vencimento', '=', $year)
             ->whereMonth('data_vencimento', '=', $month)
             ->where('pago', 'S')
             ->where('id_usuario', $idUsuario)
-            ->select(DB::raw('SUM(CAST(valor AS numeric)) as total_valor'))
-            ->first()
-            ->total_valor ?? 0;
-
+            ->sum('valor'); // Adjusted to use sum directly without casting
+    
         $despesasComNomes = $despesas->map(function ($despesa) {
             $nomeDespesa = $despesa->tipoDespesa->nome_despesa;
             $despesa->nome_despesa = $nomeDespesa;
@@ -45,7 +43,7 @@ class Dashboard extends Controller
         });
         $somaValoresReceitas = $receitas->sum('valor_recebido');
         $somaValoresDespesas = $despesas->sum('valor');
-
+    
         $result = [
             'receitas' => $receitas,
             'despesas' => $despesasComNomes,
@@ -53,10 +51,11 @@ class Dashboard extends Controller
             'soma_valores_despesas' => $somaValoresDespesas,
             'soma_valores_despesas_pagas' => $somaValoresDespesasPagas,
         ];
-
+    
         return response()->json(['data' => $result]);
     }
 
+    
     public function confirmarPagamento($idDespesa)
     {
         $result = Despesa::where('id', $idDespesa)

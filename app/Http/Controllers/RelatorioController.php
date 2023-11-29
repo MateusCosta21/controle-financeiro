@@ -102,30 +102,28 @@ class RelatorioController extends Controller
         $idUsuario = Auth::id();
         $anoAtual = session('selectedYear');
 
-
         // Calcule os totais para cada mês do ano
         $totaisMensais = [];
         for ($mes = 1; $mes <= 12; $mes++) {
             $totalDespesas = Despesa::where('id_usuario', $idUsuario)
-                ->whereRaw('CAST(valor AS NUMERIC) IS NOT NULL')
+                ->whereNotNull('valor') // Removed CAST and used whereNotNull
                 ->whereYear('data_vencimento', '=', $anoAtual)
                 ->whereMonth('data_vencimento', '=', $mes)
-                ->sum(DB::raw('CAST(valor AS NUMERIC)'));
-    
+                ->sum('valor'); // Removed CAST
+
             $totalReceitas = Receita::where('id_usuario', $idUsuario)
-                ->whereRaw('CAST(valor_recebido AS NUMERIC) IS NOT NULL')
+                ->whereNotNull('valor_recebido') // Removed CAST and used whereNotNull
                 ->whereYear('data_entrada', '=', $anoAtual)
                 ->whereMonth('data_entrada', '=', $mes)
-                ->sum(DB::raw('CAST(valor_recebido AS NUMERIC)'));
-    
+                ->sum('valor_recebido'); // Removed CAST
+
             $totaisMensais[] = [
                 'mes' => ucfirst(Carbon::createFromFormat('!m', $mes)->locale('pt_BR')->monthName),
                 'totalDespesas' => $totalDespesas,
                 'totalReceitas' => $totalReceitas,
             ];
         }
-    
+
         return view('relatorios.relatorio_despesas_receitas', compact('totaisMensais', 'anoAtual'));
     }
-    
 }
