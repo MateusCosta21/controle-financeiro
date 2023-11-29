@@ -12,7 +12,8 @@ class ReceitaController extends Controller
 {
     public function index()
     {
-        $tipoReceita = TipoReceita::all();
+        $idUsuario = Auth::id();
+        $tipoReceita = TipoReceita::where('id_usuario', $idUsuario)->get();
         return view('receitas.cadastrar',compact('tipoReceita'));
     }
 
