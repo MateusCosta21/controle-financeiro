@@ -98,7 +98,7 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                     Saldo Atual</div>
-                                <div id="saldoTotal" class="h5 mb-0 font-weight-bold text-gray-800">$500</div>
+                                <div id="saldoTotal" class="h5 mb-0 font-weight-bold text-gray-800"></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-chevron-circle-up fa-2x" id="grafico"></i>
