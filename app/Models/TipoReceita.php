@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class TipoReceita extends Model
 {
     use HasFactory;
-    protected $fillable = ['nome_receita']; 
-
+    protected $fillable = ['nome_receita', 'id_usuario']; 
+    
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
 }
