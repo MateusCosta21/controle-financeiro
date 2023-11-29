@@ -18,6 +18,11 @@ class Dashboard extends Controller
     public function getData($month)
     {
         $year = session('selectedYear');
+        if($year == ''){
+            $selectedYear = date('Y');
+            session(['selectedYear' => $selectedYear]);
+            $year = session('selectedYear');
+        }
         $idUsuario = Auth::id();
         $receitas = Receita::whereYear('data_entrada', '=', $year)
             ->whereMonth('data_entrada', '=', $month)
