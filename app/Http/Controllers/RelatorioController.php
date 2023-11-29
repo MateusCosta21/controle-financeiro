@@ -21,11 +21,12 @@ class RelatorioController extends Controller
 
     public function relatorioDespesas(Request $request)
     {
-        $tipoDespesa = TipoDespesa::all();
         $dataInicial = Carbon::parse($request->input('dataInicial'));
         $dataFinal = Carbon::parse($request->input('dataFinal'));
         $tipoDespesaId = $request->input('tipo_despesa_id');
         $idUsuario = Auth::id();
+        $tipoDespesa = TipoDespesa::where('id_usuario', $idUsuario)->get();
+
 
 
 
@@ -61,7 +62,7 @@ class RelatorioController extends Controller
     public function relatorioReceitas(Request $request)
     {
         $idUsuario = Auth::id();
-        $tipoReceita = TipoReceita::all();
+        $tipoReceita = TipoReceita::where('id_usuario', $idUsuario)->get();
         $dataInicial = Carbon::parse($request->input('dataInicial'));
         $dataFinal = Carbon::parse($request->input('dataFinal'));
         $tipoReceitaId = $request->input('tipo_receita_id');
