@@ -32,11 +32,16 @@ class ReceitaController extends Controller
             'data_entrada' => 'required|date',
         ], $mensagens);
 
+        $valorReceita = $request->input('valor_recebido');
+
+        $valorReceita = str_replace('.', '', $valorReceita);
         
+        $valorReceita = str_replace(',', '.', $valorReceita);
         $idUsuario = Auth::id();
+
         Receita::create([
             'tipo_receita_id' => $request->input('tipo_receita_id'),
-            'valor_recebido' => $request->input('valor_recebido'),
+            'valor_recebido' => $valorReceita,
             'data_entrada' => $request->input('data_entrada'),
             'id_usuario' => $idUsuario
          ]);

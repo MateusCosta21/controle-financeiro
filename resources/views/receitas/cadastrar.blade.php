@@ -50,7 +50,7 @@
                             <div class="form-group">
                                 <label for="valorReceita">Valor da Receita</label>
                                 <input type="text" class="form-control" id="valorReceita" name="valor_recebido"
-                                    placeholder="Informe o valor">
+                                    placeholder="Informe o valor" oninput="formatarMoeda(this)">
                             </div>
                             <!-- Data de Vencimento -->
                             <div class="form-group">
@@ -93,4 +93,18 @@
             </div>
         </div>
     </div>
+    <script>
+        function formatarMoeda(input) {
+            let valor = input.value;
+
+            valor = valor.replace(/\D/g, '');
+
+            valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            input.value = valor;
+        }
+    </script>
 @endsection
