@@ -60,6 +60,7 @@ class RelatorioController extends Controller
 
         return view('relatorios.relatorio_despesas', compact('result', 'tipoDespesa', 'totalDespesas', 'dataInicial', 'dataFinal'));
     }
+    
     public function relatorioReceitas(Request $request)
     {
         $idUsuario = Auth::id();
@@ -104,20 +105,19 @@ class RelatorioController extends Controller
         $idUsuario = Auth::id();
         $anoAtual = session('selectedYear');
 
-        // Calcule os totais para cada mês do ano
         $totaisMensais = [];
         for ($mes = 1; $mes <= 12; $mes++) {
             $totalDespesas = Despesa::where('id_usuario', $idUsuario)
-                ->whereNotNull('valor') // Removed CAST and used whereNotNull
+                ->whereNotNull('valor') 
                 ->whereYear('data_vencimento', '=', $anoAtual)
                 ->whereMonth('data_vencimento', '=', $mes)
-                ->sum('valor'); // Removed CAST
+                ->sum('valor'); 
 
             $totalReceitas = Receita::where('id_usuario', $idUsuario)
-                ->whereNotNull('valor_recebido') // Removed CAST and used whereNotNull
+                ->whereNotNull('valor_recebido') 
                 ->whereYear('data_entrada', '=', $anoAtual)
                 ->whereMonth('data_entrada', '=', $mes)
-                ->sum('valor_recebido'); // Removed CAST
+                ->sum('valor_recebido');
 
             $totaisMensais[] = [
                 'mes' => ucfirst(Carbon::createFromFormat('!m', $mes)->locale('pt_BR')->monthName),

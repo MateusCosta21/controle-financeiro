@@ -89,4 +89,18 @@
             </div>
         </div>
     </div>
+    <script>
+        function formatarMoeda(input) {
+            let valor = input.value;
+
+            valor = valor.replace(/\D/g, '');
+
+            valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            input.value = valor;
+        }
+    </script>
 @endsection

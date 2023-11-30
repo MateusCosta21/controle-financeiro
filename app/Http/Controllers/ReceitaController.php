@@ -19,10 +19,29 @@ class ReceitaController extends Controller
 
     public function salvarNovaReceita(Request $request)
     {        
+        $mensagens = [
+            'tipo_receita_id.required' => 'O campo Tipo de Receita é obrigatório.',
+            'valor_recebido.required' => 'O campo Valor Recebido é obrigatório.',
+            'data_entrada.required' => 'O campo Data de Entrada é obrigatório.',
+            'data_entrada.date' => 'O campo Data de Entrada deve ser uma data válida.',
+        ];
+    
+        $request->validate([
+            'tipo_receita_id' => 'required',
+            'valor_recebido' => 'required',
+            'data_entrada' => 'required|date',
+        ], $mensagens);
+
+        $valorReceita = $request->input('valor_recebido');
+
+        $valorReceita = str_replace('.', '', $valorReceita);
+        
+        $valorReceita = str_replace(',', '.', $valorReceita);
         $idUsuario = Auth::id();
+
         Receita::create([
             'tipo_receita_id' => $request->input('tipo_receita_id'),
-            'valor_recebido' => $request->input('valor_recebido'),
+            'valor_recebido' => $valorReceita,
             'data_entrada' => $request->input('data_entrada'),
             'id_usuario' => $idUsuario
          ]);
