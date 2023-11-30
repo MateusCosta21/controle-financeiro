@@ -13,9 +13,25 @@ class DespesaController extends Controller
 
         $idUsuario = Auth::id();
 
+        $request->validate([
+            'tipo_despesa_id' => 'required',
+            'valor_despesa' => 'required',
+            'data_vencimento' => 'required|date', 
+        ]);
+
+        $valorDespesa = $request->input('valor_despesa');
+
+        // Remover pontos como separadores de milhares
+        $valorDespesa = str_replace('.', '', $valorDespesa);
+        
+        // Substituir vírgulas por pontos para garantir o formato numérico adequado
+        $valorDespesa = str_replace(',', '.', $valorDespesa);
+
+        
+
         Despesa::create([
             'tipo_despesa_id' => $request->input('tipo_despesa_id'),
-            'valor' => $request->input('valor_despesa'),
+            'valor' => $valorDespesa,
             'data_vencimento' => $request->input('data_vencimento'),
             'id_usuario' => $idUsuario
          ]);
