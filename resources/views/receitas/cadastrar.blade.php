@@ -3,10 +3,19 @@
 @section('receitas')
     <div class="container-fluid">
         @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Receitas</h1>
@@ -19,7 +28,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Formulário de Receitas</h6>
                     </div>
                     <div class="card-body">
-                        <form action="{{route('cadastrar.nova_receita')}}" method="post">
+                        <form action="{{ route('cadastrar.nova_receita') }}" method="post">
                             @csrf
                             <!-- Tipo de Receita (Select) -->
                             <div class="form-group">
