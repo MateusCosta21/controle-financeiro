@@ -24,6 +24,7 @@ class Dashboard extends Controller
             $year = session('selectedYear');
         }
         $idUsuario = Auth::id();
+        
         $receitas = Receita::whereYear('data_entrada', '=', $year)
             ->whereMonth('data_entrada', '=', $month)
             ->where('id_usuario', $idUsuario)
@@ -38,7 +39,7 @@ class Dashboard extends Controller
             ->whereMonth('data_vencimento', '=', $month)
             ->where('pago', 'S')
             ->where('id_usuario', $idUsuario)
-            ->sum('valor'); // Adjusted to use sum directly without casting
+            ->sum('valor'); // Ajustado para usar sum diretamente sem cast
     
         $despesasComNomes = $despesas->map(function ($despesa) {
             $nomeDespesa = $despesa->tipoDespesa->nome_despesa;
@@ -46,11 +47,19 @@ class Dashboard extends Controller
             $despesa->data_vencimento = Carbon::parse($despesa->data_vencimento)->format('d/m/Y');
             return $despesa;
         });
+    
+        $receitasComNomes = $receitas->map(function ($receita) {
+            $nomeReceita = $receita->tipoReceita->nome_receita; 
+            $receita->nome_receita = $nomeReceita;
+            $receita->data_entrada = Carbon::parse($receita->data_entrada)->format('d/m/Y');
+            return $receita;
+        });
+    
         $somaValoresReceitas = $receitas->sum('valor_recebido');
         $somaValoresDespesas = $despesas->sum('valor');
     
         $result = [
-            'receitas' => $receitas,
+            'receitas' => $receitasComNomes,
             'despesas' => $despesasComNomes,
             'soma_valores_receitas' => $somaValoresReceitas,
             'soma_valores_despesas' => $somaValoresDespesas,
