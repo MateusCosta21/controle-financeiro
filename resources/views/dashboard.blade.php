@@ -176,6 +176,10 @@
                             var somaValoresDespesas = data.data.soma_valores_despesas;
                             var saldoAtual = somaValoresReceitas - data.data.soma_valores_despesas_pagas;
 
+                            somaValoresReceitas = somaValoresReceitas.toFixed(2);
+                            somaValoresDespesas = somaValoresDespesas.toFixed(2);
+                            saldoAtual = saldoAtual.toFixed(2);
+
                             $("#receitasTotal").text('R$ ' + somaValoresReceitas);
                             $("#despesasTotal").text('R$ ' + somaValoresDespesas);
                             $("#saldoTotal").text('R$ ' + saldoAtual);

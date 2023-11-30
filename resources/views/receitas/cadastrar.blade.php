@@ -46,7 +46,7 @@
                                 <div class="form-group">
                                     <label for="valorReceita">Valor da Receita</label>
                                     <input type="text" class="form-control" id="valorReceita" name="valor_recebido"
-                                        placeholder="Informe o valor">
+                                        placeholder="Informe o valor" oninput="formatarMoeda(this)">
                                 </div>
                                 <!-- Data de Vencimento -->
                                 <div class="form-group">
