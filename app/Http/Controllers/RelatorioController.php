@@ -48,7 +48,7 @@ class RelatorioController extends Controller
         $despesas = Despesa::select('despesas.*', 'tipo_despesas.nome_despesa')
             ->join('tipo_despesas', 'despesas.tipo_despesa_id', '=', 'tipo_despesas.id')
             ->whereBetween('data_vencimento', [$dataInicial, $dataFinal])
-            ->where('id_usuario', $idUsuario);
+            ->where('despesas.id_usuario', $idUsuario);
 
         if ($tipoDespesaId !== null) {
             $despesas->where('tipo_despesa_id', $tipoDespesaId);
@@ -86,7 +86,7 @@ class RelatorioController extends Controller
         $receitas = Receita::select('receitas.*', 'tipo_receitas.nome_receita')
             ->join('tipo_receitas', 'receitas.tipo_receita_id', '=', 'tipo_receita_id')
             ->whereBetween('data_entrada', [$dataInicial, $dataFinal])
-            ->where('id_usuario', $idUsuario);
+            ->where('receitas.id_usuario', $idUsuario);
 
         if ($tipoReceitaId !== null) {
             $receitas->where('tipo_despesa_id', $tipoReceitaId);
