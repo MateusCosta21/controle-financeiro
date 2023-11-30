@@ -13,21 +13,25 @@ class DespesaController extends Controller
 
         $idUsuario = Auth::id();
 
+        
+        $mensagens = [
+            'tipo_despesa_id.required' => 'O campo Tipo de Despesa é obrigatório.',
+            'valor_despesa.required' => 'O campo Valor da Despesa é obrigatório.',
+            'data_vencimento.required' => 'O campo Data de Vencimento é obrigatório.',
+            'data_vencimento.date' => 'O campo Data de Vencimento deve ser uma data válida.',
+        ];
+        
         $request->validate([
             'tipo_despesa_id' => 'required',
             'valor_despesa' => 'required',
             'data_vencimento' => 'required|date', 
-        ]);
-
+        ], $mensagens);
+        
         $valorDespesa = $request->input('valor_despesa');
 
-        // Remover pontos como separadores de milhares
         $valorDespesa = str_replace('.', '', $valorDespesa);
         
-        // Substituir vírgulas por pontos para garantir o formato numérico adequado
         $valorDespesa = str_replace(',', '.', $valorDespesa);
-
-        
 
         Despesa::create([
             'tipo_despesa_id' => $request->input('tipo_despesa_id'),

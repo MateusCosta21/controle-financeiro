@@ -12,6 +12,15 @@
                 {{ session('error') }}
             </div>
         @endif
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Despesas</h1>
@@ -45,7 +54,8 @@
                             <!-- Valor da Despesa -->
                             <div class="form-group">
                                 <label for="valorDespesa">Valor da Despesa</label>
-                                <input type="text" class="form-control" id="valorDespesa" name="valor_despesa" placeholder="Informe o valor" oninput="formatarMoeda(this)">
+                                <input type="text" class="form-control" id="valorDespesa" name="valor_despesa"
+                                    placeholder="Informe o valor" oninput="formatarMoeda(this)">
 
                             </div>
 
@@ -95,11 +105,14 @@
     <script>
         function formatarMoeda(input) {
             let valor = input.value;
-    
+
             valor = valor.replace(/\D/g, '');
-    
-            valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
+
+            valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
             input.value = valor;
         }
     </script>
