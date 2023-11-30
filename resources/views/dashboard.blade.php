@@ -221,7 +221,7 @@
                                 tipoDespesaCell.appendChild(document.createTextNode(despesa.nome_despesa));
 
                                 var valorCell = tr.insertCell(1);
-                                valorCell.appendChild(document.createTextNode(despesa.valor));
+                                valorCell.appendChild(document.createTextNode('R$ ' + despesa.valor));
 
                                 var dataVencimentoCell = tr.insertCell(2);
                                 dataVencimentoCell.appendChild(document.createTextNode(despesa
