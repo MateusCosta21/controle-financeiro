@@ -207,6 +207,11 @@
 
                     var acoesCell = tr.insertCell(3);
 
+                    // Contêiner para os botões
+                    var botoesContainer = document.createElement('div');
+                    botoesContainer.style.display = 'flex'; // Garante que os botões fiquem em linha
+                    acoesCell.appendChild(botoesContainer);
+
                     // Botão Editar
                     var editarButton = document.createElement('button');
                     editarButton.className = 'btn btn-warning';
@@ -216,25 +221,28 @@
                     editarButton.addEventListener('click', function() {
                         window.location.href = '/receita/edit/' + receita.id;
                     });
-                    acoesCell.appendChild(editarButton);
+                    botoesContainer.appendChild(editarButton);
+
+                    // Adiciona um espaçamento lateral
+                    var espacamento = document.createElement('div');
+                    espacamento.style.width = '10px'; // Defina a largura do espaçamento conforme necessário
+                    botoesContainer.appendChild(espacamento);
 
                     // Botão Deletar
                     var deletarButton = document.createElement('button');
-                    deletarButton.className = 'btn btn-danger';
+                    deletarButton.className = 'btn btn-danger ';
                     var iconElementDeletar = document.createElement('i');
                     iconElementDeletar.className = 'fas fa-trash';
                     deletarButton.appendChild(iconElementDeletar);
+                    botoesContainer.appendChild(deletarButton);
                     deletarButton.addEventListener('click', function() {
-                        // Ao clicar em deletar, abrir o modal de confirmação
                         $('#modalConfirmacaoDeletar').modal('show');
 
-                        // Configurar o botão de confirmação dentro do modal
                         $('#confirmarDeletar').on('click', function() {
-                            // Enviar uma solicitação AJAX para realizar o "soft delete"
                             fetch('/receita/delete/' + receita.id, {
                                     method: 'DELETE',
                                     headers: {
-                                        'X-CSRF-TOKEN': token, // Substitua com o token CSRF do seu aplicativo
+                                        'X-CSRF-TOKEN': token,
                                         'Content-Type': 'application/json',
                                     },
                                 })
@@ -242,13 +250,12 @@
                                 .then(data => {
                                     alert("Receita deletada com sucesso");
                                     $('#modalConfirmacaoDeletar').modal('hide');
-                                    // Recarregar a página atual
                                     window.location.reload();
                                 })
                                 .catch(error => console.error('Erro ao deletar receita:', error));
                         });
                     });
-                    acoesCell.appendChild(deletarButton);
+                    botoesContainer.appendChild(deletarButton);
                 });
 
                 return receitasTable;
