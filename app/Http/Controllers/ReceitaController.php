@@ -48,4 +48,13 @@ class ReceitaController extends Controller
          
         return redirect('/cadastrar/receita')->with('success', 'Nova receita salva com sucesso');
     }
+
+    public function edit($id){
+
+        $idUsuario = Auth::id();
+        $tipoReceita = TipoReceita::where('id_usuario', $idUsuario)->get();
+        $receitas = Receita::where('id', $id)->first();
+
+        return view('edit.editar_receita', ['receitas' => $receitas, 'tipoReceita' => $tipoReceita]);
+    }
 }

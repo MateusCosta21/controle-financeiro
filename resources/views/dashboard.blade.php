@@ -162,7 +162,7 @@
 
                 var thead = receitasTable.createTHead();
                 var headerRow = thead.insertRow();
-                headerRow.innerHTML = '<th>Tipo de Receita</th><th>Valor Recebido</th><th>Data de Entrada</th>';
+                headerRow.innerHTML = '<th>Tipo de Receita</th><th>Valor Recebido</th><th>Data de Entrada</th><th>Ações</th>';
 
                 var tbody = receitasTable.createTBody();
 
@@ -177,6 +177,14 @@
 
                     var dataEntradaCell = tr.insertCell(2);
                     dataEntradaCell.appendChild(document.createTextNode(receita.data_entrada));
+
+                    // Adiciona a célula para a coluna "Ações"
+                    var acoesCell = tr.insertCell(3);
+                    var editarLink = document.createElement('a');
+
+                    editarLink.href = '/receita/edit/' + receita.id; 
+                    editarLink.appendChild(document.createTextNode('Editar'));
+                    acoesCell.appendChild(editarLink);
                 });
 
                 return receitasTable;

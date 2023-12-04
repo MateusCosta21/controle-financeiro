@@ -53,6 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/gerar_relatorio_receita', [RelatorioController::class, 'relatorioReceitas'])->name('relatorio.gerarRelatorioReceitas');
     Route::post('/disconnect', [Dashboard::class, 'disconnect'])->name('disconnect');
 
+    Route::get('/receita/edit/{id}', [ReceitaController::class, 'edit'])->name('receita.edit');
+
+
 
 });
 
