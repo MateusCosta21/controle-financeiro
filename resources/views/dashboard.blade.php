@@ -182,25 +182,29 @@
 
                     var dataEntradaCell = tr.insertCell(2);
                     dataEntradaCell.appendChild(document.createTextNode(receita.data_entrada));
-
-                    // Adiciona a célula para a coluna "Ações"
                     var acoesCell = tr.insertCell(3);
-                    var editarLink = document.createElement('a');
+                    var editarButton = document.createElement('button');
 
-                    editarLink.href = '/receita/edit/' + receita.id;
-                    editarLink.appendChild(document.createTextNode('Editar'));
-                    acoesCell.appendChild(editarLink);
+                    editarButton.className = 'btn btn-warning';
+
+                    var iconElement = document.createElement('i');
+                    iconElement.className =
+                    'fas fa-pencil-alt'; 
+                    editarButton.appendChild(iconElement);
+
+                    editarButton.addEventListener('click', function() {
+                        window.location.href = '/receita/edit/' + receita.id;
+                    });
+
+                    acoesCell.appendChild(editarButton);
                 });
 
                 return receitasTable;
             }
 
             function salvaAno() {
-                // Obtém o valor selecionado no select
                 var selectedYear = document.getElementById('selectYear').value;
 
-                // Faz uma requisição Ajax para armazenar o valor na sessão
-                // Certifique-se de ter o jQuery incluído se estiver usando o exemplo abaixo
                 $.ajax({
                     type: 'POST',
                     url: '/salvaAno',
@@ -209,7 +213,6 @@
                         "_token": "{{ csrf_token() }}"
                     },
                     success: function(data) {
-                        // Fecha o modal ou executa outras ações necessárias
                         $('#selectYearModal').modal('hide');
                         loadData();
                     }
