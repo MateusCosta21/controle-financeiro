@@ -214,9 +214,9 @@
 
                     // Botão Editar
                     var editarButton = document.createElement('button');
-                    editarButton.className = 'btn btn-warning';
+                    editarButton.className = 'btn btn-info';
                     var iconElementEditar = document.createElement('i');
-                    iconElementEditar.className = 'fas fa-pencil-alt';
+                    iconElementEditar.className = 'fas fa-edit';
                     editarButton.appendChild(iconElementEditar);
                     editarButton.addEventListener('click', function() {
                         window.location.href = '/receita/edit/' + receita.id;
@@ -376,13 +376,15 @@
                                 editarButton.addEventListener('click', function() {
                                     window.location.href = '/despesa/edit/' + despesa.id;
                                 });
-                                editarButton.appendChild(document.createTextNode('Editar'));
+                                editarButton.innerHTML =
+                                '<i class="fas fa-edit"></i>'; // Font Awesome icon
                                 pagarButtonCell.appendChild(editarButton);
 
                                 // Add Delete Button
                                 var deletarButton = document.createElement('button');
                                 deletarButton.setAttribute('class', 'btn btn-danger btn-sm ml-1');
                                 deletarButton.setAttribute('data-id', despesa.id);
+                                deletarButton.innerHTML = '<i class="fas fa-trash"></i>';
                                 deletarButton.addEventListener('click', function() {
                                     $('#modalConfirmacaoDeletar').modal('show');
 
@@ -405,7 +407,6 @@
                                                 'Erro ao deletar despesa:', error));
                                     });
                                 });
-                                deletarButton.appendChild(document.createTextNode('Deletar'));
                                 pagarButtonCell.appendChild(deletarButton);
                             }
                         });
