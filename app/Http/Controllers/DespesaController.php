@@ -89,4 +89,17 @@ class DespesaController extends Controller
     
         return redirect('/dashboard')->with('success', 'Despesa atualizada com sucesso');
     }
+
+    public function softDelete($id)
+    {
+        $despesa = Despesa::find($id);
+    
+        if ($despesa) {
+            $despesa->delete();
+    
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Receita não encontrada'], 404);
+    }
 }

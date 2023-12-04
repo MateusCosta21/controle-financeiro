@@ -281,6 +281,8 @@
             function loadData() {
                 var selectedMonth = document.getElementById("selectMonth").value;
                 var url = '/getData/' + selectedMonth;
+                var token = document.head.querySelector('meta[name="csrf-token"]').content;
+
 
                 $.ajax({
                     url: url,
@@ -343,7 +345,7 @@
 
                             var dataVencimentoCell = tr.insertCell(2);
                             dataVencimentoCell.appendChild(document.createTextNode(despesa
-                            .data_vencimento));
+                                .data_vencimento));
 
                             var pagarButtonCell = tr.insertCell(3);
 
@@ -382,7 +384,26 @@
                                 deletarButton.setAttribute('class', 'btn btn-danger btn-sm ml-1');
                                 deletarButton.setAttribute('data-id', despesa.id);
                                 deletarButton.addEventListener('click', function() {
-                                    // Handle delete logic here
+                                    $('#modalConfirmacaoDeletar').modal('show');
+
+                                    $('#confirmarDeletar').on('click', function() {
+                                        fetch('/despesa/delete/' + despesa.id, {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': token,
+                                                    'Content-Type': 'application/json',
+                                                },
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                alert("Despesa deletada com sucesso");
+                                                $('#modalConfirmacaoDeletar').modal(
+                                                    'hide');
+                                                window.location.reload();
+                                            })
+                                            .catch(error => console.error(
+                                                'Erro ao deletar despesa:', error));
+                                    });
                                 });
                                 deletarButton.appendChild(document.createTextNode('Deletar'));
                                 pagarButtonCell.appendChild(deletarButton);

@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/despesa/edit/{id}', [DespesaController::class, 'edit'])->name('despesa.edit');
     Route::put('/despesa/update/{id}', [DespesaController::class, 'update'])->name('despesa.update');
+    Route::delete('/despesa/delete/{id}', [DespesaController::class, 'softDelete'])->name('despesa.softDelete');
 
 
 
