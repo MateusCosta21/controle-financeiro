@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/receita/edit/{id}', [ReceitaController::class, 'edit'])->name('receita.edit');
     Route::put('/receita/update/{id}', [ReceitaController::class, 'update'])->name('receita.update');
+    Route::delete('/receita/delete/{id}', [ReceitaController::class, 'softDelete'])->name('receita.softDelete');
+
+
+
 
 
 

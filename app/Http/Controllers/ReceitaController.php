@@ -89,4 +89,17 @@ class ReceitaController extends Controller
     
         return redirect('/dashboard')->with('success', 'Receita atualizada com sucesso');
     }
+
+    public function softDelete($id)
+    {
+        $receita = Receita::find($id);
+    
+        if ($receita) {
+            $receita->delete();
+    
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Receita não encontrada'], 404);
+    }
 }

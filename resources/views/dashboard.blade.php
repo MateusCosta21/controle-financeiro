@@ -157,10 +157,32 @@
             </div>
         </div>
 
+        <div class="modal fade" id="modalConfirmacaoDeletar" tabindex="-1" role="dialog"
+            aria-labelledby="modalConfirmacaoDeletarLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalConfirmacaoDeletarLabel">Confirmação de Exclusão</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja deletar esta receita?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmarDeletar">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             var table;
 
             function createReceitasTable(receitasData) {
+                var token = document.head.querySelector('meta[name="csrf-token"]').content;
                 var receitasTable = document.createElement('table');
                 receitasTable.setAttribute('class', 'table table-bordered');
                 receitasTable.setAttribute('id', 'receitasTable');
@@ -182,21 +204,51 @@
 
                     var dataEntradaCell = tr.insertCell(2);
                     dataEntradaCell.appendChild(document.createTextNode(receita.data_entrada));
+
                     var acoesCell = tr.insertCell(3);
+
+                    // Botão Editar
                     var editarButton = document.createElement('button');
-
                     editarButton.className = 'btn btn-warning';
-
-                    var iconElement = document.createElement('i');
-                    iconElement.className =
-                    'fas fa-pencil-alt'; 
-                    editarButton.appendChild(iconElement);
-
+                    var iconElementEditar = document.createElement('i');
+                    iconElementEditar.className = 'fas fa-pencil-alt';
+                    editarButton.appendChild(iconElementEditar);
                     editarButton.addEventListener('click', function() {
                         window.location.href = '/receita/edit/' + receita.id;
                     });
-
                     acoesCell.appendChild(editarButton);
+
+                    // Botão Deletar
+                    var deletarButton = document.createElement('button');
+                    deletarButton.className = 'btn btn-danger';
+                    var iconElementDeletar = document.createElement('i');
+                    iconElementDeletar.className = 'fas fa-trash';
+                    deletarButton.appendChild(iconElementDeletar);
+                    deletarButton.addEventListener('click', function() {
+                        // Ao clicar em deletar, abrir o modal de confirmação
+                        $('#modalConfirmacaoDeletar').modal('show');
+
+                        // Configurar o botão de confirmação dentro do modal
+                        $('#confirmarDeletar').on('click', function() {
+                            // Enviar uma solicitação AJAX para realizar o "soft delete"
+                            fetch('/receita/delete/' + receita.id, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': token, // Substitua com o token CSRF do seu aplicativo
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    alert("Receita deletada com sucesso");
+                                    $('#modalConfirmacaoDeletar').modal('hide');
+                                    // Recarregar a página atual
+                                    window.location.reload();
+                                })
+                                .catch(error => console.error('Erro ao deletar receita:', error));
+                        });
+                    });
+                    acoesCell.appendChild(deletarButton);
                 });
 
                 return receitasTable;
