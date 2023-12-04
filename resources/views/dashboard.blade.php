@@ -1,5 +1,10 @@
 @extends('layouts.inicial')
 @section('dashboard')
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <!-- Begin Page Content -->
     <div class="container-fluid">
         <!-- Page Heading -->
@@ -132,173 +137,332 @@
         </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Controle Contas</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Controle Despesas</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div id="dynamicContent"></div>
                 </div>
             </div>
+        </div>
 
-            <script>
-                var table; // Mova a declaração da variável table para fora da função
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Controle Receitas</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div id="dynamicContentReceitas"></div>
+                </div>
+            </div>
+        </div>
 
-                function salvaAno() {
-                    // Obtém o valor selecionado no select
-                    var selectedYear = document.getElementById('selectYear').value;
+        <div class="modal fade" id="modalConfirmacaoDeletar" tabindex="-1" role="dialog"
+            aria-labelledby="modalConfirmacaoDeletarLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalConfirmacaoDeletarLabel">Confirmação de Exclusão</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja deletar esta receita?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmarDeletar">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    // Faz uma requisição Ajax para armazenar o valor na sessão
-                    // Certifique-se de ter o jQuery incluído se estiver usando o exemplo abaixo
-                    $.ajax({
-                        type: 'POST',
-                        url: '/salvaAno',
-                        data: {
-                            selectedYear: selectedYear,
-                            "_token": "{{ csrf_token() }}"
-                        },
-                        success: function(data) {
-                            // Fecha o modal ou executa outras ações necessárias
-                            $('#selectYearModal').modal('hide');
-                            loadData();
-                        }
+        <script>
+            var table;
+
+            function createReceitasTable(receitasData) {
+                var token = document.head.querySelector('meta[name="csrf-token"]').content;
+                var receitasTable = document.createElement('table');
+                receitasTable.setAttribute('class', 'table table-bordered');
+                receitasTable.setAttribute('id', 'receitasTable');
+
+                var thead = receitasTable.createTHead();
+                var headerRow = thead.insertRow();
+                headerRow.innerHTML = '<th>Tipo de Receita</th><th>Valor Recebido</th><th>Data de Entrada</th><th>Ações</th>';
+
+                var tbody = receitasTable.createTBody();
+
+                receitasData.forEach(function(receita) {
+                    var tr = tbody.insertRow();
+
+                    var tipoReceitaCell = tr.insertCell(0);
+                    tipoReceitaCell.appendChild(document.createTextNode(receita.nome_receita));
+
+                    var valorRecebidoCell = tr.insertCell(1);
+                    valorRecebidoCell.appendChild(document.createTextNode('R$ ' + receita.valor_recebido));
+
+                    var dataEntradaCell = tr.insertCell(2);
+                    dataEntradaCell.appendChild(document.createTextNode(receita.data_entrada));
+
+                    var acoesCell = tr.insertCell(3);
+
+                    // Contêiner para os botões
+                    var botoesContainer = document.createElement('div');
+                    botoesContainer.style.display = 'flex'; // Garante que os botões fiquem em linha
+                    acoesCell.appendChild(botoesContainer);
+
+                    // Botão Editar
+                    var editarButton = document.createElement('button');
+                    editarButton.className = 'btn btn-info';
+                    var iconElementEditar = document.createElement('i');
+                    iconElementEditar.className = 'fas fa-edit';
+                    editarButton.appendChild(iconElementEditar);
+                    editarButton.addEventListener('click', function() {
+                        window.location.href = '/receita/edit/' + receita.id;
                     });
-                }
+                    botoesContainer.appendChild(editarButton);
 
-                function loadData() {
-                    var selectedMonth = document.getElementById("selectMonth").value;
-                    var url = '/getData/' + selectedMonth;
+                    // Adiciona um espaçamento lateral
+                    var espacamento = document.createElement('div');
+                    espacamento.style.width = '10px'; // Defina a largura do espaçamento conforme necessário
+                    botoesContainer.appendChild(espacamento);
 
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function(data) {
-                            var somaValoresReceitas = data.data.soma_valores_receitas;
-                            var somaValoresDespesas = data.data.soma_valores_despesas;
-                            var saldoAtual = somaValoresReceitas - data.data.soma_valores_despesas_pagas;
+                    // Botão Deletar
+                    var deletarButton = document.createElement('button');
+                    deletarButton.className = 'btn btn-danger ';
+                    var iconElementDeletar = document.createElement('i');
+                    iconElementDeletar.className = 'fas fa-trash';
+                    deletarButton.appendChild(iconElementDeletar);
+                    botoesContainer.appendChild(deletarButton);
+                    deletarButton.addEventListener('click', function() {
+                        $('#modalConfirmacaoDeletar').modal('show');
 
-                            somaValoresReceitas = somaValoresReceitas.toFixed(2);
-                            somaValoresDespesas = somaValoresDespesas.toFixed(2);
-                            saldoAtual = saldoAtual.toFixed(2);
+                        $('#confirmarDeletar').on('click', function() {
+                            fetch('/receita/delete/' + receita.id, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': token,
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    alert("Receita deletada com sucesso");
+                                    $('#modalConfirmacaoDeletar').modal('hide');
+                                    window.location.reload();
+                                })
+                                .catch(error => console.error('Erro ao deletar receita:', error));
+                        });
+                    });
+                    botoesContainer.appendChild(deletarButton);
+                });
 
-                            $("#receitasTotal").text('R$ ' + somaValoresReceitas);
-                            $("#despesasTotal").text('R$ ' + somaValoresDespesas);
-                            $("#saldoTotal").text('R$ ' + saldoAtual);
+                return receitasTable;
+            }
 
-                            var saldoCard = $("#saldoCard");
-                            var grafico = $("#grafico");
+            function salvaAno() {
+                var selectedYear = document.getElementById('selectYear').value;
 
-                            saldoCard.removeClass("border-left-warning border-left-danger border-left-success");
-                            grafico.removeClass("fas fa-chevron-circle-up fa-2x");
+                $.ajax({
+                    type: 'POST',
+                    url: '/salvaAno',
+                    data: {
+                        selectedYear: selectedYear,
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        $('#selectYearModal').modal('hide');
+                        loadData();
+                    }
+                });
+            }
 
-                            if (saldoAtual < 0) {
-                                saldoCard.addClass("border-left-danger");
-                                grafico.addClass("fas fa-chevron-circle-down fa-2x").css("color", "red");
+            function loadData() {
+                var selectedMonth = document.getElementById("selectMonth").value;
+                var url = '/getData/' + selectedMonth;
+                var token = document.head.querySelector('meta[name="csrf-token"]').content;
 
-                            } else if (saldoAtual === 0) {
-                                saldoCard.addClass("border-left-gray");
-                                grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "gray");
 
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(data) {
+                        var somaValoresReceitas = data.data.soma_valores_receitas;
+                        var somaValoresDespesas = data.data.soma_valores_despesas;
+                        var saldoAtual = somaValoresReceitas - data.data.soma_valores_despesas_pagas;
+
+                        somaValoresReceitas = somaValoresReceitas.toFixed(2);
+                        somaValoresDespesas = somaValoresDespesas.toFixed(2);
+                        saldoAtual = saldoAtual.toFixed(2);
+
+                        $("#receitasTotal").text('R$ ' + somaValoresReceitas);
+                        $("#despesasTotal").text('R$ ' + somaValoresDespesas);
+                        $("#saldoTotal").text('R$ ' + saldoAtual);
+
+                        var saldoCard = $("#saldoCard");
+                        var grafico = $("#grafico");
+
+                        saldoCard.removeClass("border-left-warning border-left-danger border-left-success");
+                        grafico.removeClass("fas fa-chevron-circle-up fa-2x");
+
+                        if (saldoAtual < 0) {
+                            saldoCard.addClass("border-left-danger");
+                            grafico.addClass("fas fa-chevron-circle-down fa-2x").css("color", "red");
+
+                        } else if (saldoAtual === 0) {
+                            saldoCard.addClass("border-left-gray");
+                            grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "gray");
+
+                        } else {
+                            saldoCard.addClass("border-left-success");
+                            grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "green");
+                        }
+                        if (!table) {
+                            table = document.createElement('table');
+                            table.setAttribute('class', 'table table-bordered');
+                            table.setAttribute('id', 'dataTable');
+                            var thead = table.createTHead();
+                            var headerRow = thead.insertRow();
+                            headerRow.innerHTML =
+                                '<th>Tipo de Despesa</th><th>Valor</th><th>Data de Vencimento</th><th>Pagar</th>';
+                            table.appendChild(thead);
+
+                            var tbody = table.createTBody();
+                        } else {
+                            var tbody = table.tBodies[0];
+                            tbody.innerHTML = '';
+                        }
+
+                        data.data.despesas.forEach(function(despesa) {
+                            var tr = tbody.insertRow();
+
+                            var tipoDespesaCell = tr.insertCell(0);
+                            tipoDespesaCell.appendChild(document.createTextNode(despesa.nome_despesa));
+
+                            var valorCell = tr.insertCell(1);
+                            valorCell.appendChild(document.createTextNode('R$ ' + despesa.valor));
+
+                            var dataVencimentoCell = tr.insertCell(2);
+                            dataVencimentoCell.appendChild(document.createTextNode(despesa
+                                .data_vencimento));
+
+                            var pagarButtonCell = tr.insertCell(3);
+
+                            if (despesa.pago === "S") {
+                                pagarButtonCell.innerHTML =
+                                    '<button class="btn btn-success btn-sm" disabled>Pago</button>';
+                                tipoDespesaCell.style.textDecoration = 'line-through';
+                                valorCell.style.textDecoration = 'line-through';
+                                dataVencimentoCell.style.textDecoration = 'line-through';
                             } else {
-                                saldoCard.addClass("border-left-success");
-                                grafico.addClass("fas fa-chevron-circle-up fa-2x").css("color", "green");
-                            }
-                            if (!table) {
-                                table = document.createElement('table');
-                                table.setAttribute('class', 'table table-bordered');
-                                table.setAttribute('id', 'dataTable');
-                                var thead = table.createTHead();
-                                var headerRow = thead.insertRow();
-                                headerRow.innerHTML =
-                                    '<th>Tipo de Despesa</th><th>Valor</th><th>Data de Vencimento</th><th>Pagar</th>';
-                                table.appendChild(thead);
+                                var pagarButton = document.createElement('button');
+                                pagarButton.setAttribute('class', 'btn btn-success btn-sm');
+                                pagarButton.setAttribute('data-toggle', 'modal');
+                                pagarButton.setAttribute('data-target', '#confirmarPagamentoModal');
+                                pagarButton.setAttribute('data-id', despesa.id);
+                                pagarButton.addEventListener('click', function() {
+                                    idDespesaParaConfirmar = despesa.id;
+                                });
+                                pagarButton.appendChild(document.createTextNode('Pagar'));
+                                pagarButtonCell.appendChild(pagarButton);
 
-                                var tbody = table.createTBody();
-                            } else {
-                                var tbody = table.tBodies[0];
-                                tbody.innerHTML = '';
-                            }
+                                // Add Edit Button
+                                var editarButton = document.createElement('button');
+                                editarButton.setAttribute('class', 'btn btn-info btn-sm ml-1');
+                                editarButton.setAttribute('data-toggle', 'modal');
+                                editarButton.setAttribute('data-target', '#editarDespesaModal');
+                                editarButton.setAttribute('data-id', despesa.id);
+                                editarButton.addEventListener('click', function() {
+                                    window.location.href = '/despesa/edit/' + despesa.id;
+                                });
+                                editarButton.innerHTML =
+                                '<i class="fas fa-edit"></i>'; // Font Awesome icon
+                                pagarButtonCell.appendChild(editarButton);
 
-                            data.data.despesas.forEach(function(despesa) {
-                                var tr = tbody.insertRow();
+                                // Add Delete Button
+                                var deletarButton = document.createElement('button');
+                                deletarButton.setAttribute('class', 'btn btn-danger btn-sm ml-1');
+                                deletarButton.setAttribute('data-id', despesa.id);
+                                deletarButton.innerHTML = '<i class="fas fa-trash"></i>';
+                                deletarButton.addEventListener('click', function() {
+                                    $('#modalConfirmacaoDeletar').modal('show');
 
-                                var tipoDespesaCell = tr.insertCell(0);
-                                tipoDespesaCell.appendChild(document.createTextNode(despesa.nome_despesa));
-
-                                var valorCell = tr.insertCell(1);
-                                valorCell.appendChild(document.createTextNode('R$ ' + despesa.valor));
-
-                                var dataVencimentoCell = tr.insertCell(2);
-                                dataVencimentoCell.appendChild(document.createTextNode(despesa
-                                    .data_vencimento));
-
-                                var pagarButtonCell = tr.insertCell(3);
-
-                                if (despesa.pago === "S") {
-                                    pagarButtonCell.innerHTML =
-                                        '<button class="btn btn-success btn-sm" disabled>Pago</button>';
-                                    tipoDespesaCell.style.textDecoration = 'line-through';
-                                    valorCell.style.textDecoration = 'line-through';
-                                    dataVencimentoCell.style.textDecoration = 'line-through';
-                                } else {
-                                    var pagarButton = document.createElement('button');
-                                    pagarButton.setAttribute('class', 'btn btn-success btn-sm');
-                                    pagarButton.setAttribute('data-toggle', 'modal');
-                                    pagarButton.setAttribute('data-target', '#confirmarPagamentoModal');
-                                    pagarButton.setAttribute('data-id', despesa.id);
-                                    pagarButton.addEventListener('click', function() {
-                                        idDespesaParaConfirmar = despesa.id;
+                                    $('#confirmarDeletar').on('click', function() {
+                                        fetch('/despesa/delete/' + despesa.id, {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': token,
+                                                    'Content-Type': 'application/json',
+                                                },
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                alert("Despesa deletada com sucesso");
+                                                $('#modalConfirmacaoDeletar').modal(
+                                                    'hide');
+                                                window.location.reload();
+                                            })
+                                            .catch(error => console.error(
+                                                'Erro ao deletar despesa:', error));
                                     });
-                                    pagarButton.appendChild(document.createTextNode('Pagar'));
-                                    pagarButtonCell.appendChild(pagarButton);
-                                }
-                            });
+                                });
+                                pagarButtonCell.appendChild(deletarButton);
+                            }
+                        });
 
 
-                            table.setAttribute('class',
-                                'table table-bordered text-center');
-                            table.setAttribute('id', 'dataTable');
-                            table.setAttribute('id', 'dataTable');
+                        table.setAttribute('class',
+                            'table table-bordered text-center');
+                        table.setAttribute('id', 'dataTable');
+                        table.setAttribute('id', 'dataTable');
 
-                            var dynamicContentDiv = document.getElementById("dynamicContent");
-                            dynamicContentDiv.innerHTML = '';
-                            dynamicContentDiv.appendChild(table);
+                        var dynamicContentDiv = document.getElementById("dynamicContent");
+                        dynamicContentDiv.innerHTML = '';
+                        dynamicContentDiv.appendChild(table);
+                        var receitasData = data.data.receitas;
+
+                        var receitasTable = createReceitasTable(receitasData);
+                        var dynamicContentReceitasDiv = document.getElementById("dynamicContentReceitas");
+                        dynamicContentReceitasDiv.innerHTML = ''; // Clear previous content
+                        dynamicContentReceitasDiv.appendChild(receitasTable);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            function confirmarPagamento() {
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                if (idDespesaParaConfirmar !== null) {
+                    $.ajax({
+                        url: '/confirmarPagamento/' + idDespesaParaConfirmar,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            alert("Pagamento confirmado");
+                            loadData();
+
                         },
                         error: function(error) {
                             console.log(error);
                         }
                     });
+
+                    $('#confirmarPagamentoModal').modal('hide');
+
+                    idDespesaParaConfirmar = null;
                 }
+            }
 
-                function confirmarPagamento() {
-                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                    if (idDespesaParaConfirmar !== null) {
-                        $.ajax({
-                            url: '/confirmarPagamento/' + idDespesaParaConfirmar,
-                            type: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            success: function(response) {
-                                alert("Pagamento confirmado");
-                                loadData();
+            window.addEventListener('load', function() {
+                document.getElementById("selectMonth").value = "1";
+                loadData();
+            });
+        </script>
 
-                            },
-                            error: function(error) {
-                                console.log(error);
-                            }
-                        });
-
-                        $('#confirmarPagamentoModal').modal('hide');
-
-                        idDespesaParaConfirmar = null;
-                    }
-                }
-
-                window.addEventListener('load', function() {
-                    document.getElementById("selectMonth").value = "1";
-                    loadData();
-                });
-            </script>
-
-            <!-- /.container-fluid -->
-        @endsection
+        <!-- /.container-fluid -->
+    @endsection
