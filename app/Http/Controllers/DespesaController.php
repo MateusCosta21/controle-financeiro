@@ -67,13 +67,14 @@ class DespesaController extends Controller
             'valor_despesa' => 'required',
         ], $mensagens);
         
-    
+
+        $valorOriginal = $request->input('valor_despesa_original');
         $valorDespesa = $request->input('valor_despesa');
-
-        $valorDespesa = str_replace('.', '', $valorDespesa);
-        
-        $valorDespesa = str_replace(',', '.', $valorDespesa);
-
+    
+        if (!is_null($valorOriginal)) {
+            $valorDespesa = str_replace('.', '', $valorOriginal);
+            $valorDespesa = str_replace(',', '.', $valorDespesa);
+        }
     
         $despesa = Despesa::find($id);
     

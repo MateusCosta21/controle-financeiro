@@ -71,6 +71,8 @@
                     </button>
                 </div>
                 <form action="{{ route('cadastrar.tipo_despesa') }}" method="POST">
+                    <input type="hidden" id="valorDespesaOriginal" name="valor_despesa_original" value="{{ $despesas->valor }}">
+
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">

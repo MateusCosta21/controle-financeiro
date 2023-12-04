@@ -71,10 +71,15 @@ class ReceitaController extends Controller
             'tipo_receita_id' => 'required',
             'valor_recebido' => 'required',
         ], $mensagens);
-    
+     
+
+        $valorOriginal = $request->input('valor_receita_original');
         $valorReceita = $request->input('valor_recebido');
-        $valorReceita = str_replace('.', '', $valorReceita);
-        $valorReceita = str_replace(',', '.', $valorReceita);    
+    
+        if (!is_null($valorOriginal)) {
+            $valorReceita = str_replace('.', '', $valorReceita);
+            $valorReceita = str_replace(',', '.', $valorReceita);    
+        }
     
         $receita = Receita::find($id);
     
