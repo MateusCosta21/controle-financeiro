@@ -343,7 +343,7 @@
 
                             var dataVencimentoCell = tr.insertCell(2);
                             dataVencimentoCell.appendChild(document.createTextNode(despesa
-                                .data_vencimento));
+                            .data_vencimento));
 
                             var pagarButtonCell = tr.insertCell(3);
 
@@ -364,6 +364,28 @@
                                 });
                                 pagarButton.appendChild(document.createTextNode('Pagar'));
                                 pagarButtonCell.appendChild(pagarButton);
+
+                                // Add Edit Button
+                                var editarButton = document.createElement('button');
+                                editarButton.setAttribute('class', 'btn btn-info btn-sm ml-1');
+                                editarButton.setAttribute('data-toggle', 'modal');
+                                editarButton.setAttribute('data-target', '#editarDespesaModal');
+                                editarButton.setAttribute('data-id', despesa.id);
+                                editarButton.addEventListener('click', function() {
+                                    window.location.href = '/despesa/edit/' + despesa.id;
+                                });
+                                editarButton.appendChild(document.createTextNode('Editar'));
+                                pagarButtonCell.appendChild(editarButton);
+
+                                // Add Delete Button
+                                var deletarButton = document.createElement('button');
+                                deletarButton.setAttribute('class', 'btn btn-danger btn-sm ml-1');
+                                deletarButton.setAttribute('data-id', despesa.id);
+                                deletarButton.addEventListener('click', function() {
+                                    // Handle delete logic here
+                                });
+                                deletarButton.appendChild(document.createTextNode('Deletar'));
+                                pagarButtonCell.appendChild(deletarButton);
                             }
                         });
 
