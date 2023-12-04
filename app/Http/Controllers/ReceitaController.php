@@ -71,10 +71,15 @@ class ReceitaController extends Controller
             'tipo_receita_id' => 'required',
             'valor_recebido' => 'required',
         ], $mensagens);
-    
+     
+
+        $valorOriginal = $request->input('valor_receita_original');
         $valorReceita = $request->input('valor_recebido');
-        $valorReceita = str_replace('.', '', $valorReceita);
-        $valorReceita = str_replace(',', '.', $valorReceita);    
+    
+        if (!is_null($valorOriginal)) {
+            $valorReceita = str_replace('.', '', $valorReceita);
+            $valorReceita = str_replace(',', '.', $valorReceita);    
+        }
     
         $receita = Receita::find($id);
     
@@ -88,5 +93,18 @@ class ReceitaController extends Controller
         $receita->save();
     
         return redirect('/dashboard')->with('success', 'Receita atualizada com sucesso');
+    }
+
+    public function softDelete($id)
+    {
+        $receita = Receita::find($id);
+    
+        if ($receita) {
+            $receita->delete();
+    
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Receita não encontrada'], 404);
     }
 }

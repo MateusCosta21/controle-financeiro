@@ -157,10 +157,32 @@
             </div>
         </div>
 
+        <div class="modal fade" id="modalConfirmacaoDeletar" tabindex="-1" role="dialog"
+            aria-labelledby="modalConfirmacaoDeletarLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalConfirmacaoDeletarLabel">Confirmação de Exclusão</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja deletar esta receita?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmarDeletar">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             var table;
 
             function createReceitasTable(receitasData) {
+                var token = document.head.querySelector('meta[name="csrf-token"]').content;
                 var receitasTable = document.createElement('table');
                 receitasTable.setAttribute('class', 'table table-bordered');
                 receitasTable.setAttribute('id', 'receitasTable');
@@ -182,21 +204,58 @@
 
                     var dataEntradaCell = tr.insertCell(2);
                     dataEntradaCell.appendChild(document.createTextNode(receita.data_entrada));
+
                     var acoesCell = tr.insertCell(3);
+
+                    // Contêiner para os botões
+                    var botoesContainer = document.createElement('div');
+                    botoesContainer.style.display = 'flex'; // Garante que os botões fiquem em linha
+                    acoesCell.appendChild(botoesContainer);
+
+                    // Botão Editar
                     var editarButton = document.createElement('button');
-
-                    editarButton.className = 'btn btn-warning';
-
-                    var iconElement = document.createElement('i');
-                    iconElement.className =
-                    'fas fa-pencil-alt'; 
-                    editarButton.appendChild(iconElement);
-
+                    editarButton.className = 'btn btn-info';
+                    var iconElementEditar = document.createElement('i');
+                    iconElementEditar.className = 'fas fa-edit';
+                    editarButton.appendChild(iconElementEditar);
                     editarButton.addEventListener('click', function() {
                         window.location.href = '/receita/edit/' + receita.id;
                     });
+                    botoesContainer.appendChild(editarButton);
 
-                    acoesCell.appendChild(editarButton);
+                    // Adiciona um espaçamento lateral
+                    var espacamento = document.createElement('div');
+                    espacamento.style.width = '10px'; // Defina a largura do espaçamento conforme necessário
+                    botoesContainer.appendChild(espacamento);
+
+                    // Botão Deletar
+                    var deletarButton = document.createElement('button');
+                    deletarButton.className = 'btn btn-danger ';
+                    var iconElementDeletar = document.createElement('i');
+                    iconElementDeletar.className = 'fas fa-trash';
+                    deletarButton.appendChild(iconElementDeletar);
+                    botoesContainer.appendChild(deletarButton);
+                    deletarButton.addEventListener('click', function() {
+                        $('#modalConfirmacaoDeletar').modal('show');
+
+                        $('#confirmarDeletar').on('click', function() {
+                            fetch('/receita/delete/' + receita.id, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': token,
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    alert("Receita deletada com sucesso");
+                                    $('#modalConfirmacaoDeletar').modal('hide');
+                                    window.location.reload();
+                                })
+                                .catch(error => console.error('Erro ao deletar receita:', error));
+                        });
+                    });
+                    botoesContainer.appendChild(deletarButton);
                 });
 
                 return receitasTable;
@@ -222,6 +281,8 @@
             function loadData() {
                 var selectedMonth = document.getElementById("selectMonth").value;
                 var url = '/getData/' + selectedMonth;
+                var token = document.head.querySelector('meta[name="csrf-token"]').content;
+
 
                 $.ajax({
                     url: url,
@@ -305,6 +366,48 @@
                                 });
                                 pagarButton.appendChild(document.createTextNode('Pagar'));
                                 pagarButtonCell.appendChild(pagarButton);
+
+                                // Add Edit Button
+                                var editarButton = document.createElement('button');
+                                editarButton.setAttribute('class', 'btn btn-info btn-sm ml-1');
+                                editarButton.setAttribute('data-toggle', 'modal');
+                                editarButton.setAttribute('data-target', '#editarDespesaModal');
+                                editarButton.setAttribute('data-id', despesa.id);
+                                editarButton.addEventListener('click', function() {
+                                    window.location.href = '/despesa/edit/' + despesa.id;
+                                });
+                                editarButton.innerHTML =
+                                '<i class="fas fa-edit"></i>'; // Font Awesome icon
+                                pagarButtonCell.appendChild(editarButton);
+
+                                // Add Delete Button
+                                var deletarButton = document.createElement('button');
+                                deletarButton.setAttribute('class', 'btn btn-danger btn-sm ml-1');
+                                deletarButton.setAttribute('data-id', despesa.id);
+                                deletarButton.innerHTML = '<i class="fas fa-trash"></i>';
+                                deletarButton.addEventListener('click', function() {
+                                    $('#modalConfirmacaoDeletar').modal('show');
+
+                                    $('#confirmarDeletar').on('click', function() {
+                                        fetch('/despesa/delete/' + despesa.id, {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': token,
+                                                    'Content-Type': 'application/json',
+                                                },
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                alert("Despesa deletada com sucesso");
+                                                $('#modalConfirmacaoDeletar').modal(
+                                                    'hide');
+                                                window.location.reload();
+                                            })
+                                            .catch(error => console.error(
+                                                'Erro ao deletar despesa:', error));
+                                    });
+                                });
+                                pagarButtonCell.appendChild(deletarButton);
                             }
                         });
 

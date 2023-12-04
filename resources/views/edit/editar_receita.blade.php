@@ -25,6 +25,8 @@
                         </div>
                         <div class="card-body">
                             <form action="{{ route('receita.update', ['id' => $receitas->id]) }}" method="post">
+                                <input type="hidden" id="valorReceitaOriginal" name="valor_receita_original" value="{{ $receitas->valor_recebido }}">
+
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">

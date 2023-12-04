@@ -10,6 +10,7 @@ use App\Http\Controllers\ReceitaController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoDespesaController;
 use App\Http\Controllers\TipoReceitaController;
+use App\Models\Despesa;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,16 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/receita/edit/{id}', [ReceitaController::class, 'edit'])->name('receita.edit');
     Route::put('/receita/update/{id}', [ReceitaController::class, 'update'])->name('receita.update');
+    Route::delete('/receita/delete/{id}', [ReceitaController::class, 'softDelete'])->name('receita.softDelete');
+
+
+    Route::get('/despesa/edit/{id}', [DespesaController::class, 'edit'])->name('despesa.edit');
+    Route::put('/despesa/update/{id}', [DespesaController::class, 'update'])->name('despesa.update');
+    Route::delete('/despesa/delete/{id}', [DespesaController::class, 'softDelete'])->name('despesa.softDelete');
+
+
+
+
 
 
 
