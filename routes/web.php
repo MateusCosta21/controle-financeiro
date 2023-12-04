@@ -54,6 +54,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/disconnect', [Dashboard::class, 'disconnect'])->name('disconnect');
 
     Route::get('/receita/edit/{id}', [ReceitaController::class, 'edit'])->name('receita.edit');
+    Route::put('/receita/update/{id}', [ReceitaController::class, 'update'])->name('receita.update');
+
+
 
 
 

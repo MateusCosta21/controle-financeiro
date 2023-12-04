@@ -1,5 +1,10 @@
 @extends('layouts.inicial')
 @section('dashboard')
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <!-- Begin Page Content -->
     <div class="container-fluid">
         <!-- Page Heading -->
@@ -182,7 +187,7 @@
                     var acoesCell = tr.insertCell(3);
                     var editarLink = document.createElement('a');
 
-                    editarLink.href = '/receita/edit/' + receita.id; 
+                    editarLink.href = '/receita/edit/' + receita.id;
                     editarLink.appendChild(document.createTextNode('Editar'));
                     acoesCell.appendChild(editarLink);
                 });

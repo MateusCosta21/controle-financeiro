@@ -24,14 +24,14 @@
                             <h6 class="m-0 font-weight-bold text-primary">Editar Receitas</h6>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('cadastrar.nova_receita') }}" method="post">
+                            <form action="{{ route('receita.update', ['id' => $receitas->id]) }}" method="post">
                                 @csrf
-                                <!-- Tipo de Receita (Select) -->
+                                @method('PUT')
                                 <div class="form-group">
                                     <label for="tipoReceita">Tipo Receita</label>
                                     <div class="input-group">
                                         <select class="form-control" id="tipoDespesa" name="tipo_receita_id">
-                                            <option value="{{ $receitas->id }}" selected>{{ $receitas->tipoReceita->nome_receita }}</option>
+                                            <option value="{{ $receitas->tipoReceita->id}}" selected>{{ $receitas->tipoReceita->nome_receita }}</option>
                                             @foreach ($tipoReceita as $receita)
                                                 <option value="{{ $receita->id }}">{{ $receita->nome_receita }}</option>
                                             @endforeach
@@ -49,7 +49,7 @@
 
                                 </div>
                                 <!-- Botão de Envio -->
-                                <button type="submit" class="btn btn-primary">Enviar</button>
+                                <button type="submit" class="btn btn-primary">Atualizar</button>
                             </form>
                         </div>
                     </div>
