@@ -30,6 +30,11 @@ class DespesaController extends Controller
         
         $valorDespesa = $request->input('valor_despesa');
 
+
+        if($valorDespesa == '0,00'){
+            return redirect('/cadastrar')->with('error', 'O valor da despesa não pode ser igual a 0');
+        }
+
         $valorDespesa = str_replace('.', '', $valorDespesa);
         
         $valorDespesa = str_replace(',', '.', $valorDespesa);
@@ -70,8 +75,12 @@ class DespesaController extends Controller
 
         $valorOriginal = $request->input('valor_despesa_original');
         $valorDespesa = $request->input('valor_despesa');
+
+        if($valorDespesa == '0,00'){
+            return redirect('/despesa/edit/' . $id)->with('error', 'O valor da despesa não pode ser igual a 0');
+        }
     
-        if (!is_null($valorOriginal)) {
+        if (!is_null($valorOriginal) ) {
             $valorDespesa = str_replace('.', '', $valorOriginal);
             $valorDespesa = str_replace(',', '.', $valorDespesa);
         }

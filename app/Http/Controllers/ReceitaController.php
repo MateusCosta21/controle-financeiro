@@ -34,6 +34,11 @@ class ReceitaController extends Controller
 
         $valorReceita = $request->input('valor_recebido');
 
+
+        if($valorReceita == '0,00'){
+            return redirect('/cadastrar/receita/')->with('error', 'O valor da receita não pode ser igual a 0');
+        }
+
         $valorReceita = str_replace('.', '', $valorReceita);
 
         $valorReceita = str_replace(',', '.', $valorReceita);
@@ -75,6 +80,10 @@ class ReceitaController extends Controller
 
         $valorOriginal = $request->input('valor_receita_original');
         $valorReceita = $request->input('valor_recebido');
+
+        if($valorReceita == '0,00'){
+            return redirect('/receita/edit/' . $id)->with('error', 'O valor da receita não pode ser igual a 0');
+        }
     
         if (!is_null($valorOriginal)) {
             $valorReceita = str_replace('.', '', $valorReceita);
